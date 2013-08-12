@@ -1,0 +1,34 @@
+1. In Apache server enable rewrite_module (might be called mod_rewrite).
+	Modules configuration might be located in "{apache_dir}\conf\httpd.conf": 
+	uncomment (remove # sign) #LoadModule rewrite_module modules/mod_rewrite.so
+
+2. In PHP enable (1) php_curl, (2) php_openssl (3) php_xsl extensions.
+	Extensions configuration might be located in "{apache_dir}\bin\php.ini"
+	uncomment (remove ; sign) ;extension=php_curl.dll and ;extension=php_openssl.dll
+	;extension=php_xsl.dll in php.ini on Windows, or apt-get install php5-xsl on most Linux-based systems
+
+3. Add the following to "{apache_dir}\conf\extra\httpd-vhosts.conf" (adjust to your own local installation and directories):
+
+<VirtualHost *:80>
+    ServerAdmin webmaster@dummy-host.example.com
+    DocumentRoot "c:/wamp/www/silex/web"
+    ServerName geolabel.net
+    ServerAlias www.geolabel.net
+    ErrorLog "logs/geolabel.net-error.log"
+    CustomLog "logs/geolabel.net-access.log" common
+</VirtualHost>
+
+4. Uncomment the following in "{apache_dir}\conf\httpd.conf":
+	#Include conf/extra/httpd-vhosts.conf (remove # sign)
+
+5. Run Notepad as Administrator, open "C:\Windows\System32\drivers\etc\hosts" and add the following:
+
+127.0.0.1	geolabel.net
+127.0.0.1	www.geolabel.net
+
+6. Restart Apache and PHP services
+
+CURL Note: Note to Win32 Users
+In order to enable this module on a Windows environment, libeay32.dll and ssleay32.dll must be present in your PATH (download from http://www.ie7pro.com/openssl.html).
+Downlpoad php_curl-5.4.3-VC9-x64.zip from: http://www.anindya.com/php-5-4-3-and-php-5-3-13-x64-64-bit-for-windows/
+and replace /php5.4.3/ext/php_curl.dll
