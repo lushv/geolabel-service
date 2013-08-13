@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request as Request;
 $app = new Silex\Application();
 // enable error messages
 //$app['debug'] = true;
-//error_reporting(E_ERROR);
+error_reporting(E_ERROR);
 
 $app->get('/', function() {
 	return 'GEO laberl API documentation is coming soon.';
