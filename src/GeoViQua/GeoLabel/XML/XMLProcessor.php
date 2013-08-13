@@ -241,6 +241,61 @@ class XMLProcessor{
 								
 		return $hoveroverArray;
 	}
+	
+	/* Function getSummary
+	 * Generates an array populated with summary of the information available for a given dataset
+	 * 
+	 * @param $xml DomDocument an XML document to process
+	 * @return array an array populated with hover-over text for each GEO label facet,
+	 * or null if $xml is empty
+	 */
+	public function getDatasetSummary($xml){
+		if(empty($xml)){
+			return null;
+		}
+		$summaryArray = array(  
+								'producerProfile' => array(
+									'availability' => $this->getAvailabilityInteger($xml, $this->producerProfileXpath),
+									'organisationName' => $this->getFirstNode($xml, $this->organisationNameXPath),
+								),
+								'produerComments' => array(
+									'availability' => $this->getAvailabilityInteger($xml, $this->producerCommentsXPath),
+									'supplementalInformation' => $this->getFirstNode($xml, $this->supplementalInformationXPath),
+									'supplementalInformationType' => "",
+								),
+								'lineage' => array(
+									'availability' => $this->getAvailabilityInteger($xml, $this->lineageXPath),
+									'processStepCount' => $this->countElements($xml, $this->processStepCountXPath),
+								),
+								'standardsComplaince' => array(
+									'availability' => $this->getAvailabilityInteger($xml, $this->standardsXPath),
+									'standardName' => $this->getFirstNode($xml, $this->standardNameXPath),
+									'standardVersion' => $this->getFirstNode($xml, $this->standardVersionXPath),
+								),
+								'qualityInformation' => array(
+									'availability' => $this->getAvailabilityInteger($xml, $this->qualityXPath),
+									'scopeLevel' => $this->getFirstNode($xml, $this->scopeLevelXPath),
+								),
+								'userFeedback' => array(
+									'availability' => $this->getAvailabilityInteger($xml, $this->feedbackXPath),
+									'feedbacksCount' => $this->countElements($xml, $this->feedbacksCountXPath),
+									'ratingsCount' => $this->countElements($xml, $this->ratingsCountXPath),
+									'feedbacksAverageRating' => $this->getAverageRating($xml, $this->ratingsCountXPath),
+								),
+								'expertReview' => array(
+									'availability' => $this->getAvailabilityInteger($xml, $this->reviewXPath),
+									'expertReviewsCount' => $this->countElements($xml, $this->expertReviewsCountXPath),
+									'expertRatingsCount' => $this->countElements($xml, $this->expertRatingsCountXPath),
+									'expertAverageRating' => $this->getAverageRating($xml, $this->expertRatingsCountXPath),
+								),
+								'citations' => array(
+									'availability' => $this->getAvailabilityInteger($xml, $this->citationsXPath),
+									'citationsCount' => $this->countElements($xml, $this->citationsCountXPath),
+								)
+							);
+								
+		return $summaryArray;
+	}
 
 	/* Function getStaticURLs
 	 * Generates an array populated with drilldown URLs for each GEO label facet
@@ -327,10 +382,39 @@ class XMLProcessor{
 		elseif(!empty($feedbackXML)){
 			$gvqXML = $feedbackXML;
 		}		
-		// Get all data from the XML document into 3 arrays
+		// Get availability data from the XML document into an array
 		$availabilityArray = $this->getAvailabilityEncodings($gvqXML);
 		$datasetID = $this->getXMLFileIdentifier($gvqXML);
-		$json = json_encode(array( 'datasetIdentifier' => $datasetID, 'facets' => $availabilityArray));
+		$json = json_encode(array('datasetIdentifier' => $datasetID, 'facets' => $availabilityArray));
+		
+		return $json;
+	}
+	
+	/* Function getJsonDatasetSummary
+	 * Returns dataset summary for 8 GEO label facets in a JSON format
+	 * 
+	 * @param $producerXML DomDocument  producer document
+	 * @param $feedbackXML DomDocument feedback document
+	 * @return String JSON representation of the GEO label facets
+	 */
+	public function getJsonDatasetSummary($producerXML, $feedbackXML){
+		// Join two documents
+		$gvqXML = null;
+		if(!empty($producerXML) && !empty($feedbackXML)){
+			$gvqXML = $this->joinXMLDoms($producerXML, $feedbackXML);
+		}
+		elseif(!empty($producerXML)){
+			$gvqXML = $producerXML;
+		}
+		elseif(!empty($feedbackXML)){
+			$gvqXML = $feedbackXML;
+		}
+		
+		// Get summary of the XML documents
+		$datasetID = $this->getXMLFileIdentifier($gvqXML);
+		$summaryArray = $this->getDatasetSummary($gvqXML);		
+
+		$json = json_encode(array('datasetIdentifier' => $datasetID, 'facets' => $summaryArray));
 		return $json;
 	}
 	

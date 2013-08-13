@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request as Request;
 $app = new Silex\Application();
 // enable error messages
 //$app['debug'] = true;
-error_reporting(E_ERROR);
+//error_reporting(E_ERROR);
 
 $app->get('/', function() {
 	return 'GEO laberl API documentation is coming soon.';
@@ -130,9 +130,9 @@ $app->get('/api/v1/facets', function(Request $request) {
 	
 	$xmlProcessor = new xmlProcessor();
 
-	$json = $xmlProcessor->getJsonAvailabilityEncodings($metadataXML, $feedbackXML);
+	$json = $xmlProcessor->getJsonDatasetSummary($metadataXML, $feedbackXML);
 	if(empty($json)){
-		return new Response('<b>Internal server error</b>: could not generate JSON representation.', 500);
+		return new Response('<b>Internal server error</b>: could not generate JSON response.', 500);
 	}
 	//return $json;
 	return new Response($json, 200, array('Content-Type' => 'application/json'));
