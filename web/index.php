@@ -18,6 +18,7 @@ $app->get('/', function() {
 			<html>
 				<body>
 					<p>GEO label API documentation is coming soon. Meanwhile, you can test the API by using this page: <a href="http://www.geolabel.net/geolabel.html">www.geolabel.net/geolabel.html</a>.</p>
+					<p>For more information about the GEO label please visit <a href="http://www.geolabel.info">www.geolabel.info</a>.</p>
 				</body>
 			</html>';
 });
@@ -143,6 +144,15 @@ $app->get('/api/v1/facets', function(Request $request) {
 	return new Response($json, 200, array('Content-Type' => 'application/json'));
 });
 
+// ************************************  GET and POST for drilldown functionality  ****************************************
+
+$app->get('/api/v1/drilldown', function(Request $request) {
+	$metadataURL = $request->query->get('metadata');
+	$feedbackURL = $request->query->get('feedback');
+	$facet = $request->query->get('facet');
+});
+
+
 // *****************************************    INSPIRE Demo    *************************************************
 
 $app->post('/api/v1/geolabel/demo', function(Request $request) {
@@ -199,238 +209,6 @@ $app->post('/api/v1/geolabel/demo', function(Request $request) {
 	//return $svg;
 	return new Response($svg, 200, array('Content-Type' => 'image/svg+xml'));
 });
-
-
-/*
-// *****************************************      TEST URLS      *************************************************
-// *********************************************   LML   *********************************************************
-$app->post('/lml/generate_from_gvq_xml/', function (Request $request) {
-	$lmlParser = new LMLParser();
-	$gvqXML = null;
-
-	$file = $request->files->get('gvq_xml');
-	if (!empty($file)){
-		//libxml_use_internal_errors(true);
-		$gvqXML = new DOMDocument('1.0', 'utf-8');
-		$gvqXML->load($file);
-	}
-	else{
-		return new Response('GVQ XML file is missing.', 400);
-	}
-    $gvqURL = $request->get('gvq_url');
-    $size = $request->get('size');
-    $format = $request->get('format');
-	$lml = $lmlParser->constructFromAggregatedXML($gvqXML, $gvqURL, $size, $format);
-	if(empty($lml)){
-		return new Response('Could not generate LML.', 500);
-	}
-	return new Response($lmlParser->getString($lml), 200, array('Content-Type' => 'text/xml'));
-});
-
-$app->post('/lml/generate_from_gvq_url/', function (Request $request) {
-	$lmlParser = new LMLParser();
-    $gvqURL = $request->get('gvq_url');
-	if(empty($gvqURL)){
-		return new Response('GVQ URL is missing.', 400);
-	}
-	
-    $size = $request->get('size');
-    $format = $request->get('format');
-	
-	$lml = $lmlParser->constructFromAggregatedURL($gvqURL, $size, $format);
-	if(empty($lml)){
-		return new Response('Could not generate LML.', 500);
-	}
-	return new Response($lmlParser->getString($lml), 200, array('Content-Type' => 'text/xml'));
-});
-
-$app->post('/lml/generate_from_producer_feedback_xmls/', function (Request $request) {
-	$lmlParser = new LMLParser();
-	$producerXML = null;
-	$feedbackXML = null;
-	$producerFile = $request->files->get('producer_xml');
-	$feedbackFile = $request->files->get('feedback_xml');
-	
-	if(empty($producerFile) && empty($feedbackFile)){
-		return new Response('Producer and Feedback XML files are missing.', 400);
-	}
-
-	if(!empty($producerFile)){
-		//libxml_use_internal_errors(true);
-		$producerXML = new DOMDocument('1.0', 'utf-8');
-		$producerXML->load($producerFile);
-	}
-	if(!empty($feedbackFile)){
-		//libxml_use_internal_errors(true);
-		$feedbackXML = new DOMDocument('1.0', 'utf-8');
-		$feedbackXML->load($feedbackFile);
-	}
-    $producerURL = $request->get('producer_url');
-	$feedbackURL = $request->get('feedback_url');
-    $size = $request->get('size');
-    $format = $request->get('format');
-	
-	$lml = $lmlParser->constructFromXMLs($producerXML, $producerURL, $feedbackXML, $feedbackURL, $size, $format);
-	if(empty($lml)){
-		return new Response('Could not generate LML.', 500);
-	}	
-	return new Response($lmlParser->getString($lml), 200, array('Content-Type' => 'text/xml'));
-});
-
-$app->post('/lml/generate_from_producer_feedback_urls/', function (Request $request) {
-	$lmlParser = new LMLParser();
-    $producerURL = $request->get('producer_url');
-    $feedbackURL = $request->get('feedback_url');
-	if(empty($producerURL) && empty($feedbackURL)){
-		return new Response('Producer and Feedback URLs are missing.', 400);
-	}
-    $size = $request->get('size');
-    $format = $request->get('format');
-	
-	$lml = $lmlParser->constructFromURLs($producerURL, $feedbackURL, $size, $format);
-	if(empty($lml)){
-		return new Response('Could not generate LML.', 500);
-	}
-	return new Response($lmlParser->getString($lml), 200, array('Content-Type' => 'text/xml'));
-});
-
-$app->post('/lml/generate_from_availability_encoding/', function (Request $request) {
-
-	return "[TO DO]";
-	
-});
-
-$app->post('/lml/generate_from_producer_xml_feedback_id/', function (Request $request) {
-
-	return "[TO DO]";
-	
-});
-
-$app->post('/lml/generate_from_producer_url_feedback_id/', function (Request $request) {
-
-	return "[TO DO]";
-	
-});
-
-$app->post('/lml/generate_from_feedback_id/', function (Request $request) {
-
-	return "[TO DO]";
-	
-});
-
-// *********************************************   SVG   *********************************************************
-$app->post('/svg/generate_from_gvq_xml/', function (Request $request) {
-	$svgParser = new SVGParser();
-	$gvqXML = null;
-
-	$file = $request->files->get('gvq_xml');
-	if (!empty($file)){
-		//libxml_use_internal_errors(true);
-		$gvqXML = new DOMDocument('1.0', 'utf-8');
-		$gvqXML->load($file);
-	}
-	else{
-		return new Response('GVQ XML file is missing.', 400);
-	}
-    $gvqURL = $request->get('gvq_url');
-    $size = $request->get('size');
-	
-	$svg = $svgParser->constructFromAggregatedXML($gvqXML, $gvqURL, $size);
-	if(empty($svg)){
-		return new Response('Could not generate SVG.', 500);
-	}
-	return new Response($svg, 200, array('Content-Type' => 'image/svg+xml'));
-});
-
-$app->post('/svg/generate_from_gvq_url/', function (Request $request) {
-	$svgParser = new SVGParser();
-    $gvqURL = $request->get('gvq_url');
-	if(empty($gvqURL)){
-		return new Response('GVQ URL is missing.', 400);
-	}
-    $size = $request->get('size');
-	
-	$svg = $svgParser->constructFromAggregatedURL($gvqURL, $size);
-	if(empty($svg)){
-		return new Response('Could not generate SVG.', 500);
-	}
-	return new Response($svg, 200, array('Content-Type' => 'image/svg+xml'));
-});
-
-$app->post('/svg/generate_from_producer_feedback_xmls/', function (Request $request) {
-	$svgParser = new SVGParser();
-	$producerXML = null;
-	$feedbackXML = null;
-	$producerFile = $request->files->get('producer_xml');
-	$feedbackFile = $request->files->get('feedback_xml');
-	
-	if(empty($producerFile) && empty($feedbackFile)){
-		return new Response('Producer and Feedback XML files are missing.', 400);
-	}
-
-	if(!empty($producerFile)){
-		//libxml_use_internal_errors(true);
-		$producerXML = new DOMDocument('1.0', 'utf-8');
-		$producerXML->load($producerFile);
-	}
-	if(!empty($feedbackFile)){
-		//libxml_use_internal_errors(true);
-		$feedbackXML = new DOMDocument('1.0', 'utf-8');
-		$feedbackXML->load($feedbackFile);
-	}
-    $producerURL = $request->get('producer_url');
-	$feedbackURL = $request->get('feedback_url');
-    $size = $request->get('size');
-	
-	$svg = $svgParser->constructFromXMLs($producerXML, $producerURL, $feedbackXML, $feedbackURL, $size);
-	if(empty($svg)){
-		return new Response('Could not generate SVG.', 500);
-	}
-	return new Response($svg, 200, array('Content-Type' => 'image/svg+xml'));
-});
-
-$app->post('/svg/generate_from_producer_feedback_urls/', function (Request $request) {
-	$svgParser = new SVGParser();
-    $producerURL = $request->get('producer_url');
-    $feedbackURL = $request->get('feedback_url');
-	if(empty($producerURL) && empty($feedbackURL)){
-		return new Response('Producer and Feedback URLs are missing.', 400);
-	}
-	
-    $size = $request->get('size');
-    $format = $request->get('format');
-	
-	$svg = $svgParser->constructFromURLs($producerURL, $feedbackURL, $size);
-	if(empty($svg)){
-		return new Response('Could not generate SVG.', 500);
-	}
-	return new Response($svg, 200, array('Content-Type' => 'image/svg+xml'));	
-});
-
-$app->post('/svg/generate_from_availability_encoding/', function (Request $request) {
-
-	return "[TO DO]";
-	
-});
-
-$app->post('/svg/generate_from_producer_xml_feedback_id/', function (Request $request) {
-
-	return "[TO DO]";
-	
-});
-
-$app->post('/svg/generate_from_producer_url_feedback_id/', function (Request $request) {
-
-	return "[TO DO]";
-	
-});
-
-$app->post('/svg/generate_from_feedback_id/', function (Request $request) {
-
-	return "[TO DO]";
-	
-});
-*/
 
 $app->run();
 

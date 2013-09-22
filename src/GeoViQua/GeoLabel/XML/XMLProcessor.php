@@ -331,8 +331,9 @@ class XMLProcessor{
 	public function getDrilldownURLs($producerURL, $feedbackURL){
 		$producerURL = urlencode($producerURL);
 		$feedbackURL = urlencode($feedbackURL);
-		$baseURL = 'http://uncertgeo.aston.ac.uk/geolabel/stylesheets/facet.php?';
-		$stylesheetBaseURL = 'http://uncertgeo.aston.ac.uk/geolabel/stylesheets/';
+		$serverName = $_SERVER['SERVER_NAME'];
+		$baseURL = "http://" . $serverName . '/drilldown/facet.php?';
+		$stylesheetBaseURL = "http://" . $serverName . '/drilldown/';
 		
 		$producerProfileURL = $baseURL . 'doc=' . $producerURL . '&xsl='.  $stylesheetBaseURL. 'GVQ_ProducerProfile.xsl';
 		$lineageURL = $baseURL . 'doc=' . $producerURL . '&xsl='.  $stylesheetBaseURL. 'GVQ_Lineage.xsl';

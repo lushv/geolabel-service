@@ -17,7 +17,6 @@
 						<li class="active"><a href="#tabs1-pane1" data-toggle="tab">Upload metadata XML document</a></li>
 						<li><a href="#tabs1-pane2" data-toggle="tab">Enter metadata URL location</a></li>
 						<li><a href="#tabs1-pane3" data-toggle="tab">Example metadata documents</a></li>
-						<li><a href="#tabs1-pane4" data-toggle="tab">Test with your own documents</a></li>
 					</ul>
 					<div class="tab-content">
 <!-- =================== TAB 1 ========================== -->
@@ -95,7 +94,6 @@
 										<div class="controls">
 											<select id="metadata_url" name="metadata_url">
 											  <option value="">Please, select metadata URL</option>
-											  <option value="http://schemas.geoviqua.org/GVQ/4.0/example_documents/PQMs/DigitalClimaticAtlas_mt_an_v10.xml">Digital Climatic Atlas...</option>
 											  <option value="http://schemas.geoviqua.org/GVQ/4.0/example_documents/PQM_UQM_combined/DigitalClimaticAtlas_mt_an_v10.xml">Digital Climatic Atlas combined doc...</option>
 											  <option value="http://schemas.geoviqua.org/GVQ/4.0/example_documents/PQMs/GLC_2000_GVQ_raw.xml">The Land Cover...</option>
 											</select>
@@ -130,40 +128,7 @@
 									<button type="submit" class="btn">Submit</button>
 								</fieldset>
 							</form>
-						</div>
-<!-- =================== TAB 4 ========================== -->
-						<div class="tab-pane" id="tabs1-pane4">
-							<form action="index.php/api/v1/geolabel/demo" method="post" method="post" enctype="multipart/form-data" class="form-horizontal">
-								<fieldset>
-									<div class="control-group">
-										<label class="control-label" for="geonetwork_id">Enter the ID of your dataset:</label>
-										<div class="controls">
-											<input id="geonetwork_id" class="input-xlarge" type="text"  placeholder="5" name="geonetwork_id" >
-										</div>
-									</div>
-									<div class="control-group">
-										<label class="control-label" for="target_code">Enter target code:</label>
-										<div class="controls">
-											<input id="target_code" class="input-xlarge" type="text" placeholder="mtri2an1ib" name="target_code">
-										</div>
-									</div>
-									<div class="control-group">
-										<label class="control-label" for="target_codespace">Enter target codespace:</label>
-										<div class="controls">
-											<input id="target_codespace" class="input-xlarge" type="text" placeholder="opengis.uab.cat" name="target_codespace">
-										</div>
-									</div>
-									<div class="control-group">
-										<label class="control-label" for="size">Enter GEO label size:</label>
-										<div class="controls">
-											<input id="size" class="input-xlarge" type="text" placeholder="200px" name="size">
-										</div>
-									</div>
-									<br />
-									<button type="submit" class="btn">Submit</button>
-								</fieldset>
-							</form>
-						</div>
+						</div><!-- /.tab-3 -->
 					</div><!-- /.tab-content -->
 				</div><!-- /.tabbable -->
 			</div><!-- /.row -->
