@@ -14,7 +14,12 @@ $app = new Silex\Application();
 //error_reporting(E_ERROR);
 
 $app->get('/', function() {
-	return 'GEO laberl API documentation is coming soon.';
+	return '<!DOCTYPE html>
+			<html>
+				<body>
+					<p>GEO label API documentation is coming soon. Meanwhile, you can test the API by using this page: <a href="http://www.geolabel.net/geolabel.html">www.geolabel.net/geolabel.html</a>.</p>
+				</body>
+			</html>';
 });
 
 // ************************************  GET and POST to obtain GEO label representation  ****************************************
