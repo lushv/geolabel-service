@@ -18,6 +18,7 @@ $app->get('/', function() {
 			<html>
 				<body>
 					<p>GEO label API documentation is coming soon. Meanwhile, you can test the API by using this page: <a href="http://www.geolabel.net/geolabel.html">www.geolabel.net/geolabel.html</a>.</p>
+					<p>For more information about the GEO label please visit <a href="http://www.geolabel.info">www.geolabel.info</a>.</p>
 				</body>
 			</html>';
 });
