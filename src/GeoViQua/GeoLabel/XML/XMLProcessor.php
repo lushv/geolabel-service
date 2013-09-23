@@ -333,7 +333,7 @@ class XMLProcessor{
 		$feedbackURL = urlencode($feedbackURL);
 		$serverName = $_SERVER['SERVER_NAME'];
 		$baseURL = "http://" . $serverName . '/drilldown/facet.php?';
-		$stylesheetBaseURL = "http://" . $serverName . '/drilldown/';
+		$stylesheetBaseURL = urlencode("http://" . $serverName . '/drilldown/');
 		
 		$producerProfileURL = $baseURL . 'doc=' . $producerURL . '&xsl='.  $stylesheetBaseURL. 'GVQ_ProducerProfile.xsl';
 		$lineageURL = $baseURL . 'doc=' . $producerURL . '&xsl='.  $stylesheetBaseURL. 'GVQ_Lineage.xsl';
