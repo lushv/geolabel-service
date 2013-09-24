@@ -4,7 +4,8 @@ require_once __DIR__.'/../vendor/autoload.php';
 use GeoViQua\GeoLabel\XML\XMLProcessor as XMLProcessor;
 use GeoViQua\GeoLabel\LML\LMLParser as LMLParser;
 use GeoViQua\GeoLabel\SVG\SVGParser as SVGParser;
-use GeoViQua\GeoLabel\Request\RequestProcessor as RequestProcessor;
+use GeoViQua\GeoLabel\Drilldown\Drilldown as Drilldown;
+
 use Symfony\Component\HttpFoundation\Response as Response;
 use Symfony\Component\HttpFoundation\Request as Request;
 
@@ -150,6 +151,85 @@ $app->get('/api/v1/drilldown', function(Request $request) {
 	$metadataURL = $request->query->get('metadata');
 	$feedbackURL = $request->query->get('feedback');
 	$facet = $request->query->get('facet');
+	
+	$metadataURL = $request->query->get('metadata');
+	$feedbackURL = $request->query->get('feedback');
+	
+	if(empty($facet)){
+		return new Response('<b>Bad request:</b> "facet" query parameter is missing.', 400);
+	}
+	
+	if(empty($metadataURL) && empty($feedbackURL)){
+		return new Response('<b>Bad request:</b> "metadata" and "feedback" query parameters are missing.', 400);
+	}
+	$xmlProcessor = new XMLProcessor();
+	$metadataXML = null;
+	$feedbackXML = null;
+
+	// Check if metadata query parameter is set up and 
+	// try to obtain XML document
+	if(!empty($metadataURL)){
+		// Decode URLs
+		$metadataURL = urldecode($metadataURL);
+		$metadataXML = $xmlProcessor->getXmlFromURL($metadataURL);
+		if(empty($metadataXML)){
+			return new Response('<b>Bad request:</b> could not retrieve an XML file from "metadata" URL.', 400);
+		}
+	}
+	// Check if feedback query parameter is set up and 
+	// try to obtain XML document
+	if(!empty($feedbackURL)){
+		// Decode URLs
+		$feedbackURL = urldecode($feedbackURL);
+		$feedbackXML = $xmlProcessor->getXmlFromURL($feedbackURL);
+		if(empty($feedbackXML)){
+			return new Response('<b>Bad request:</b> could not retrieve an XML file from "feedback" URL.', 400);
+		}
+	}
+	
+	$stylesheet_url = null;
+	// get xsl location
+	switch ($facet) {
+		case "producer_profile":
+			$stylesheet_url = "stylesheets/GVQ_ProducerProfile.xsl";
+			break;
+		case "producer_comments":
+			$stylesheet_url = "stylesheets/GVQ_ProducerComments.xsl";
+			break;
+		case "lineage":
+			$stylesheet_url = "stylesheets/GVQ_Lineage.xsl";
+			break;
+		case "standards_complaince":
+			$stylesheet_url = "stylesheets/GVQ_StandardsCompliance.xsl";
+			break;
+		case "quality":
+			$stylesheet_url = "stylesheets/GVQ_Quality.xsl";
+			break;
+		case "user_feedback":
+			$stylesheet_url = "stylesheets/GVQ_UserFeedback.xsl";
+			break;
+		case "expert_review":
+			$stylesheet_url = "stylesheets/GVQ_ExpertReviews.xsl";
+			break;
+		case "citations":
+			$stylesheet_url = "stylesheets/GVQ_Citations.xsl";
+			break;
+		default:
+			break;
+	}
+	
+	if(empty($stylesheet_url)){
+		return new Response('<b>Bad request:</b> invalid "facet" parameter value supplied.', 400);
+	}
+	
+	// create a DOM document and load the XSL stylesheet
+	$xsl = new DomDocument;
+	$xsl->load($stylesheet_url);
+		
+	$drilldown = new Drilldown();
+	$drilldownResp = $drilldown -> getDrilldown($metadataXML, $feedbackXML, $xsl);
+	
+	return new Response($drilldownResp, 200);
 });
 
 

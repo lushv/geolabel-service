@@ -6,19 +6,19 @@
         <html>
             <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-                <title>Expert Review</title>
-                <link href="bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+                <title>User Feedback</title>
+                <link href="/stylesheets/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
             </head>
             <body>
 				<div class="page-header">
-					<h1>Expert Reviews Summary</h1>
+					<h1>User Feedback Summary</h1>
 				</div>
 				<div class="container">
 				<h2>Dataset identifier:
                     <xsl:value-of select="$fileID" />
                 </h2>
 				<xsl:for-each select="//gvq:item">
-					<xsl:call-template name="review"/>
+					<xsl:call-template name="feedback"/>
 				</xsl:for-each>
 				</div>
           </body>
@@ -26,10 +26,10 @@
         </xsl:template>
 	
 	<xsl:param name="count" select="1"/>
-    <xsl:template match="//gvq:item" name="review">
+    <xsl:template match="//gvq:item" name="feedback">
 		<!-- Test expertise level -->
         <xsl:variable name="expertiseLevel" select="gvq:user/gvq:expertiseLevel"/>
-		<xsl:if test="$expertiseLevel = 4 or $expertiseLevel = 5">
+		<xsl:if test="not($expertiseLevel = 4 or $expertiseLevel = 5)">
 			<!-- Get user details information -->
 			<xsl:variable name="user" select="gvq:user"/>
 			<xsl:variable name="userRole" select="gvq:user/gvq:userDetails/gmd:role/gmd:CI_RoleCode"/>
@@ -48,7 +48,7 @@
 
 			<table width="95%" border="2" cellpadding="5" cellspacing="2">
 				<th colspan="2">
-					<h4>Expert Review</h4>
+					<h4>User Feedback</h4>
 				</th>
 				<tr>
 				<td>

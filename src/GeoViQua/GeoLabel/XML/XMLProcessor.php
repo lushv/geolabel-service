@@ -331,24 +331,30 @@ class XMLProcessor{
 	public function getDrilldownURLs($producerURL, $feedbackURL){
 		$producerURL = urlencode($producerURL);
 		$feedbackURL = urlencode($feedbackURL);
-		$serverName = $_SERVER['SERVER_NAME'];
-		$baseURL = "http://" . $serverName . '/drilldown/facet.php?';
-		$stylesheetBaseURL = urlencode("http://" . $serverName . '/drilldown/');
 		
-		$producerProfileURL = $baseURL . 'doc=' . $producerURL . '&xsl='.  $stylesheetBaseURL. 'GVQ_ProducerProfile.xsl';
-		$lineageURL = $baseURL . 'doc=' . $producerURL . '&xsl='.  $stylesheetBaseURL. 'GVQ_Lineage.xsl';
-		$produerCommentsURL = $baseURL . 'doc=' . $producerURL . '&xsl='.  $stylesheetBaseURL. 'GVQ_ProducerComments.xsl';
-		$standardsComplainceURL = $baseURL . 'doc=' . $producerURL . '&xsl='.  $stylesheetBaseURL. 'GVQ_StandardsCompliance.xsl';
-		$qualityInformationURL = $baseURL . 'doc=' . $producerURL . '&xsl='.  $stylesheetBaseURL. 'GVQ_Quality.xsl';
-		if(!empty($feedbackURL)){
-			$userFeedbackURL = $baseURL . 'doc=' . $feedbackURL . '&xsl='.  $stylesheetBaseURL. 'GVQ_UserFeedback.xsl';
-			$expertReviewURL = $baseURL . 'doc=' . $feedbackURL . '&xsl='.  $stylesheetBaseURL. 'GVQ_ExpertReviews.xsl';
-		}
-		else{
-			$userFeedbackURL = $baseURL . 'doc=' . $producerURL . '&xsl='.  $stylesheetBaseURL. 'GVQ_UserFeedback.xsl';
-			$expertReviewURL = $baseURL . 'doc=' . $producerURL . '&xsl='.  $stylesheetBaseURL. 'GVQ_ExpertReviews.xsl';		
-		}
-		$citationsURL = $baseURL . 'doc=' . $producerURL . '&xsl='.  $stylesheetBaseURL. 'GVQ_Citations.xsl';
+		// Get server protocol
+		$server_protocol = 'http';
+		if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+		$server_protocol .= "://";
+		
+		// Get current URL and set base drilldown URL
+		$request_uri = str_replace("geolabel?", "drilldown?", $_SERVER['REQUEST_URI']);
+		// quick fix for the inspire demo
+		$request_uri = str_replace("geolabel/demo", "drilldown?", $request_uri);
+		
+		$base_url = explode("?", $request_uri);
+		$drilldown_base_url = $server_protocol . $_SERVER["SERVER_NAME"] . $base_url[0] . "?";
+		
+		// Construct drilldown URLs
+		$producerProfileURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet=' . 'producer_profile';
+		$produerCommentsURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet=' . 'producer_comments';
+		$lineageURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet='. 'lineage';
+		$standardsComplainceURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet=' . 'standards_complaince';
+		$qualityInformationURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet=' . 'quality';
+		
+		$userFeedbackURL = $drilldown_base_url . 'metadata=' . $producerURL . '&feedback=' .$feedbackURL . '&facet=' . 'user_feedback';
+		$expertReviewURL = $drilldown_base_url . 'metadata=' . $producerURL . '&feedback=' .$feedbackURL . '&facet=' . 'expert_review';
+		$citationsURL = $drilldown_base_url . 'metadata=' . $producerURL . '&feedback=' .$feedbackURL . '&facet=' . 'citations';
 		
 		$drilldownURLsArray = array(
 								'producerProfile' => $producerProfileURL,
@@ -595,6 +601,7 @@ class XMLProcessor{
 			$xmlString = file_get_contents($url);
 			if(!empty($xmlString)){
 				$dom = new DOMDocument('1.0');
+				$dom->formatOutput = true;
 				if($dom->loadXML($xmlString)){
 					return $dom;
 				}

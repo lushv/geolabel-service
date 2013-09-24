@@ -7,7 +7,7 @@
             <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
                 <title>Producer Profile</title>
-                <link href="bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+                <link href="/stylesheets/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
             </head>
             <body>
 				<div class="page-header">
@@ -17,12 +17,9 @@
 				<h2>Dataset identifier:
                     <xsl:value-of select="$fileID" />
                 </h2>
-				<table width="95%" border="2" cellpadding="5" cellspacing="2">
-					<th><h4>Producer Details</h4></th>
-					<xsl:for-each select="//gmd:contact/gmd:CI_ResponsibleParty">
-							<xsl:call-template name="producerProf"/>
-					</xsl:for-each>
-				</table>
+				<xsl:for-each select="//gmd:contact/gmd:CI_ResponsibleParty">
+						<xsl:call-template name="producerProf"/>
+				</xsl:for-each>
 				<br />
 				</div>
 			</body>
@@ -44,18 +41,22 @@
         <xsl:variable name="fax" select="gmd:contactInfo/gmd:CI_Contact/gmd:phone/gmd:CI_Telephone/gmd:facsimile/gco:CharacterString"/>
         <xsl:variable name="electronicMailAddress" select="gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString"/>
 		
-		<tr>
-			<td>
-				<b>Individual Name :</b>
-				<xsl:value-of select="$individualName"/><br /><br />
+		<table width="95%" border="2" cellpadding="5" cellspacing="2">
+		<th>
+			<h4>Producer Details</h4>
+		</th>
+			<tr>
+				<td>
+					<b>Individual Name :</b>
+					<xsl:value-of select="$individualName"/><br /><br />
 
-				<b>Organisation Name: </b>
-				<xsl:value-of select="$organisationName"/><br /><br />
-				
-				<b>Position: </b>
-				<xsl:value-of select="$positionName"/><br /><br />
-			</td>
-		</tr>
+					<b>Organisation Name: </b>
+					<xsl:value-of select="$organisationName"/><br /><br />
+					
+					<b>Position: </b>
+					<xsl:value-of select="$positionName"/><br /><br />
+				</td>
+			</tr>
 		<th>
 			<h4>Contact Details</h4>
 		</th>
@@ -86,5 +87,7 @@
 				<xsl:value-of select="$electronicMailAddress"/>
 			</td>
 		</tr>
+		</table>
+		<br />
     </xsl:template>
 </xsl:stylesheet>

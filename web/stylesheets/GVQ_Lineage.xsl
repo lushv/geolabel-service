@@ -6,61 +6,53 @@
         <html>
             <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-                <title>Producer Comments</title>
-                <link href="bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+                <title>Lineage Information</title>
+                <link href="/stylesheets/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
             </head>
             <body>
 				<div class="page-header">
-					<h1>Producer Comments Summary</h1>
+					<h1>Lineage Information Summary</h1>
 				</div>
 				<div class="container">
 				<h2>Dataset identifier:
                     <xsl:value-of select="$fileID" />
                 </h2>
-				<xsl:for-each select="//gmd:identificationInfo">
-						<xsl:call-template name="supplementalInfo"/>
-				</xsl:for-each>
-				<br />
-				<table width="95%" border="2" cellpadding="5" cellspacing="2">				
-				<th><h4>Discovered Issues</h4></th>
-				<xsl:for-each select="//gvq:dataQualityInfo//gvq:discoveredIssue">
-						<xsl:call-template name="discoveredIssue"/>
-				</xsl:for-each>
+				<table width="95%" border="2" cellpadding="5" cellspacing="2">
+                    <xsl:for-each select="//gmd19157:LI_Lineage | //gmd:LI_Lineage">
+                        <xsl:call-template name="lineageInfo"/>
+			        </xsl:for-each>          
 				</table>
+				<br />
 				</div>
           </body>
         </html>
         </xsl:template>              
     <!-- Template for collating feedbacks info a few paras -->
-    <xsl:template match="//gmd:identificationInfo" name="supplementalInfo">
-		<!-- Producer Supplemental Information -->
-        <xsl:variable name="suppInfo" select="//gmd:supplementalInformation/gco:CharacterString"/>
-		<xsl:if test="$suppInfo">
-			<table width="95%" border="2" cellpadding="5" cellspacing="2">
-			<th><h4>Supplemental Information</h4></th>
-				<tr>
-					<td><xsl:value-of select="$suppInfo"/></td>
-				</tr>
-			</table>
-			<br />
+    <xsl:template match="gmd19157:LI_Lineage | gmd:LI_Lineage" name="lineageInfo">
+        <xsl:variable name="statement" select="gmd19157:statement/gco:CharacterString | gmd:statement/gco:CharacterString"/>
+        <xsl:variable name="description" select="gmd19157:processStep/gmd19157:LI_ProcessStep/gmd19157:description/gco:CharacterString | gmd:processStep/gmd:LI_ProcessStep/gmd:description/gco:CharacterString"/>
+        <xsl:variable name="rationale" select="gmd19157:processStep/gmd19157:LI_ProcessStep/gmd19157:rationale/gco:CharacterString | gmd:processStep/gmd:LI_ProcessStep/gmd:rationale/gco:CharacterString"/>
+		
+		<xsl:if test="$statement or $description or $rationale">
+			<th>
+				<h4>Lineage Information</h4>
+			</th>
+			<tr>
+				<td>
+					<xsl:if test="$statement">
+						<b>Lineage Statement:</b><br />
+						<xsl:value-of select="$statement"/><br /><br />
+					</xsl:if>
+					<xsl:if test="$description">
+						<b>Process Step Description:</b><br />
+						<xsl:value-of select="$description"/><br /><br />
+					</xsl:if>
+					<xsl:if test="$rationale">
+						<b>Process Step Rationale:</b><br />
+						<xsl:value-of select="$rationale"/><br /><br />					
+					</xsl:if>
+				</td>
+			</tr>
 		</xsl:if>
-    </xsl:template>
-	
-    <xsl:template match="//gvq:dataQualityInfo//gvq:discoveredIssue" name="discoveredIssue">
-		<!-- Discovered Issues -->
-		<xsl:for-each select="gvq:GVQ_DiscoveredIssue">
-			<xsl:variable name="knownProblem" select="gvq:knownProblem/gco:CharacterString"/>
-			<xsl:variable name="workAround" select="gvq:workAround/gco:CharacterString"/>
-			<xsl:if test="$knownProblem">
-				<tr>
-					<td>
-						<b>Known Problem:</b><br />
-						<xsl:value-of select="$knownProblem"/><br /><br />
-						<b>Work Around: </b><br />
-						<xsl:value-of select="$workAround"/><br />
-					</td>
-				</tr>
-			</xsl:if>
-		</xsl:for-each>
     </xsl:template>
 </xsl:stylesheet>
