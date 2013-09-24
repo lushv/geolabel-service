@@ -33,7 +33,7 @@
         <xsl:variable name="description" select="gmd19157:processStep/gmd19157:LI_ProcessStep/gmd19157:description/gco:CharacterString | gmd:processStep/gmd:LI_ProcessStep/gmd:description/gco:CharacterString"/>
         <xsl:variable name="rationale" select="gmd19157:processStep/gmd19157:LI_ProcessStep/gmd19157:rationale/gco:CharacterString | gmd:processStep/gmd:LI_ProcessStep/gmd:rationale/gco:CharacterString"/>
 		
-		<xsl:if test="$statement or $description or $rationale">
+		<xsl:if test="normalize-space($statement)  != '' or $description or $rationale">
 			<th>
 				<h4>Lineage Information</h4>
 			</th>
@@ -43,14 +43,20 @@
 						<b>Lineage Statement:</b><br />
 						<xsl:value-of select="$statement"/><br /><br />
 					</xsl:if>
-					<xsl:if test="$description">
-						<b>Process Step Description:</b><br />
-						<xsl:value-of select="$description"/><br /><br />
-					</xsl:if>
-					<xsl:if test="$rationale">
-						<b>Process Step Rationale:</b><br />
-						<xsl:value-of select="$rationale"/><br /><br />					
-					</xsl:if>
+					
+					<xsl:for-each select="gmd19157:processStep/gmd19157:LI_ProcessStep">
+						<p>
+							<b>Process step
+								<xsl:value-of select="position()" />
+							</b>
+							<br />
+							<b>Description: </b>
+							<xsl:value-of select="gmd19157:description/gco:CharacterString" />
+							<br />
+							<b>Rationale: </b>
+							<xsl:value-of select="gmd19157:rationale/gco:CharacterString" />
+						</p>
+					</xsl:for-each>
 				</td>
 			</tr>
 		</xsl:if>
