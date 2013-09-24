@@ -345,6 +345,11 @@ class XMLProcessor{
 		$base_url = explode("?", $request_uri);
 		$drilldown_base_url = $server_protocol . $_SERVER["SERVER_NAME"] . $base_url[0] . "?";
 		
+		// This code fixes geolabel.net redirection problem
+		if (strpos($drilldown_base_url, '/?') !== false) {
+			$drilldown_base_url = str_replace("/?", "/api/v1/drilldown?", $drilldown_base_url);
+		}
+		
 		// Construct drilldown URLs
 		$producerProfileURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet=' . 'producer_profile';
 		$produerCommentsURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet=' . 'producer_comments';
