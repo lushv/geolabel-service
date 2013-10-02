@@ -332,12 +332,13 @@ class XMLProcessor{
 		$producerURL = urlencode($producerURL);
 		$feedbackURL = urlencode($feedbackURL);
 		
-		/*
+
 		// Get server protocol
 		$server_protocol = 'http';
 		if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
 		$server_protocol .= "://";
 		
+		/*
 		// Get current URL and set base drilldown URL
 		$request_uri = str_replace("geolabel?", "drilldown?", $_SERVER['REQUEST_URI']);
 		// quick fix for the inspire demo
@@ -353,7 +354,7 @@ class XMLProcessor{
 		*/
 		
 		// temporary fix for the geolabel.net service
-		$drilldown_base_url = "http://www.geolabel.net/api/v1/drilldown?";
+		$drilldown_base_url = $server_protocol . $_SERVER["SERVER_NAME"] . "/api/v1/drilldown?";
 		
 		// Construct drilldown URLs
 		$producerProfileURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet=' . 'producer_profile';
