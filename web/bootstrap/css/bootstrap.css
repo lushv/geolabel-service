@@ -6199,3 +6199,44 @@ a.badge:focus {
 .affix {
   position: fixed;
 }
+
+/* ---------------------------------------   CUSTOM STYLING   ------------------------------------------------ */
+
+#submit_btn_1 {
+  margin: 0px 0px 0px 370px;
+}
+
+.geolabel-result {
+  float: right;
+  width: 400px;
+  height: 400px;
+  padding: 0px 0px 0px 0px;
+  text-align: center;
+  color: #C00000;
+  font-weight: bold;  
+}
+
+.geolabel-result-info {
+  margin-right: auto;
+  margin-left: auto;
+  color: #0088CC;
+  font-weight: bold;
+}
+
+.geolabel-svg-div {
+  margin: 10px 0px 0px 0px;
+}
+
+.spinner {
+  width: 100px;
+  height: 100px;
+  background-image: url('../img/spinner.gif');
+  background-position: center;
+  background-repeat: no-repeat;  
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 80px;
+  text-align: center;
+}
+
+

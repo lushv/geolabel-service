@@ -589,33 +589,8 @@ class SVG{
 	public function getHeader($size){
 		$scale = $size/250;
 		return 	
-	'<?xml version="1.0" encoding="utf-8"?>
-	<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-	<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	'<svg version="1.1" id="geolabel_svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	width="'.$size.'" height="'.$size.'" xml:space="preserve">
-		<style>
-			.producer_profile:hover {
-			}
-			.producerComments:hover{
-			}
-			.lineageInformation:hover{
-			}
-			.standardsCompliance:hover{
-			}
-			.qualityInformation:hover{
-			}
-			.userFeedback:hover{
-			}
-			.expertReview:hover{
-			}
-			.citations:hover{
-			}
-		</style>
-
-		<script type="text/ecmascript"> <![CDATA[
-
-		]]></script>
-
 		<g class="size_group" id="size_group" transform="scale('.$scale.')">';
 	}
 	

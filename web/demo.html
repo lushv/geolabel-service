@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+	<head>
+		<title>GEO Label</title>
+		<link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+		<!-- Latest JQuery plugin -->
+        <script src="js/jquery-1.10.1/jquery.min.js" type="text/javascript"></script>
+		<!-- Forms Functionality -->
+        <script src="js/custom/geolabel-forms.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div class="page-header">
+		</div>
+		<div class="container">
+			<h4>Generate a GEO label from producer metadata and user feedback</h4>
+			<hr>
+			<div class="row">
+				<div class="tabbable span12">
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#tab_content_1" data-toggle="tab">Enter metadata URL location</a></li>
+						<li><a href="#tab_content_2" data-toggle="tab">Upload metadata XML document</a></li>
+						<li><a href="#tab_content_3" data-toggle="tab">Example metadata documents</a></li>
+					</ul>
+					<div class="tab-content">
+<!-- =================== TAB 1 ========================== -->
+						<div class="tab-pane active" id="tab_content_1">
+							<!-- Resulting GEO label -->
+							<div id="geolabel_1_div" class="geolabel-result">
+								<div id="info" class="geolabel-result-info">
+									The resulting GEO label will be displayed here
+								</div>
+								<div id="geolabel_1" class="geolabel-svg-div">
+								
+								</div>
+								<div id='loader_1' class="spinner">
+								
+								</div>
+							</div>
+							<!-- Form -->
+							<div id="geolabel_form_1_div">
+								<form id="geolabel_form_1" name="geolabel-form-1" action="" class="form-horizontal">
+									<fieldset>
+										<div class="control-group">
+											<label class="control-label" for="metadata_url_1">Enter metadata URL location:</label>
+											<div class="controls">
+												<input id="metadata_url_1" class="input-xlarge" type="text" placeholder="http://" name="metadata_url">
+											</div>
+										</div>
+										<div class="control-group">
+											<label class="control-label" for="target_code_1">Enter target code:</label>
+											<div class="controls">
+												<input id="target_code_1" class="input-xlarge" type="text" placeholder="mtri2an1ib" name="target_code">
+											</div>
+										</div>
+										<div class="control-group">
+											<label class="control-label" for="target_codespace_1">Enter target codespace:</label>
+											<div class="controls">
+												<input id="target_codespace_1" class="input-xlarge" type="text" placeholder="opengis.uab.cat" name="target_codespace">
+											</div>
+										</div>
+										<div class="control-group">
+											<label class="control-label" for="size_1">Enter GEO label size:</label>
+											<div class="controls">
+												<input id="size_1" class="input-xlarge" type="text" placeholder="200px" name="size">
+											</div>
+										</div>
+										<br />
+										<button id="submit_btn_1" class="btn btn-large btn-primary" type="button">
+											Submit
+										</button>
+									</fieldset>
+								</form>
+							</div>
+						</div>
+<!-- =================== TAB 2 ========================== -->
+						<div class="tab-pane" id="tab_content_2">
+							<form action="api/v1/geolabel/demo" method="post" method="post" enctype="multipart/form-data" class="form-horizontal">
+								<fieldset>
+									<div class="control-group">
+										<label class="control-label" for="metadata">Select metadata document:</label>
+										<div class="controls">
+											<input id="metadata" class="input-file" type="file" name="metadata">
+										</div>
+									</div>
+									<div class="control-group">
+										<label class="control-label" for="target_code">Enter target code:</label>
+										<div class="controls">
+											<input id="target_code" class="input-xlarge" type="text" placeholder="mtri2an1ib" name="target_code">
+										</div>
+									</div>
+									<div class="control-group">
+										<label class="control-label" for="target_codespace">Enter target codespace:</label>
+										<div class="controls">
+											<input id="target_codespace" class="input-xlarge" type="text" placeholder="opengis.uab.cat" name="target_codespace">
+										</div>
+									</div>
+									<div class="control-group">
+										<label class="control-label" for="size">Enter GEO label size:</label>
+										<div class="controls">
+											<input id="size" class="input-xlarge" type="text" placeholder="200px" name="size">
+										</div>
+									</div>
+									<br />
+									<button type="submit" class="btn">Submit</button>
+								</fieldset>
+							</form>
+						</div>
+<!-- =================== TAB 3 ========================== -->
+						<div class="tab-pane" id="tab_content_3">
+							<form action="api/v1/geolabel/demo" method="post" method="post" enctype="multipart/form-data" class="form-horizontal">
+								<fieldset>
+									<div class="control-group">
+										<label class="control-label" for="metadata_url">Select metadata document:</label>
+										<div class="controls">
+											<select id="metadata_url" name="metadata_url">
+											  <option value="">Please select metadata URL</option>
+											  <option value="http://schemas.geoviqua.org/GVQ/4.0/example_documents/PQM_UQM_combined/DigitalClimaticAtlas_mt_an_v10.xml">Digital Climatic Atlas combined doc...</option>
+											  <option value="http://schemas.geoviqua.org/GVQ/4.0/example_documents/PQMs/GLC_1000_GVQ_raw.xml">The Land Cover...</option>
+											</select>
+										</div>
+									</div>
+									<div class="control-group">
+										<label class="control-label" for="target_code">Select target code:</label>
+										<div class="controls">
+											<select id="target_code" name="target_code">
+											  <option value="">Please select target code</option>
+											  <option value="mtri2an1ib">mtri2an1ib</option>
+											  <option value="LCL12_GrnBcn_1005_07">LCL12_GrnBcn_1005_07</option>
+											</select>
+										</div>
+									</div>
+									<div class="control-group">
+										<label class="control-label" for="target_codespace">Enter target codespace:</label>
+										<div class="controls">
+											<select id="target_codespace" name="target_codespace">
+											  <option value="">Please select target codespace</option>
+											  <option value="opengis.uab.cat">opengis.uab.cat</option>
+											</select>
+										</div>
+									</div>
+									<div class="control-group">
+										<label class="control-label" for="size">Enter GEO label size:</label>
+										<div class="controls">
+											<input id="size" class="input-xlarge" type="text" placeholder="200px" name="size">
+										</div>
+									</div>
+									<br />
+									<button type="submit" class="btn">Submit</button>
+								</fieldset>
+							</form>
+						</div><!-- /.tab-3 -->
+					</div><!-- /.tab-content -->
+				</div><!-- /.tabbable -->
+			</div><!-- /.row -->
+
+<!-- ==============================================
+<!-- jQuery via Google + local fallback, see h5bp.com -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  	<script>window.jQuery || document.write('<script src="bootstrap/js/jquery-1.7.1.min.js"><\/script>')</script>
+<!-- Bootstrap JS: compiled and minified -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+			<hr>
+		</div>
+	</body>
+</html>
