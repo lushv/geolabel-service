@@ -23,7 +23,7 @@
                     empty-cells : show;
                     }></style>
                 <title>ISO Table View</title>
-                <link href="/stylesheets/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"></link>
+                <link href="/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"></link>
             </head>
             <body>
 				<div class="page-header">

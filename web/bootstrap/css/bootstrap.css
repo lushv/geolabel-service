@@ -764,15 +764,15 @@ h3 {
 }
 
 h1 {
-  font-size: 38.5px;
+  font-size: 32px;
 }
 
 h2 {
-  font-size: 31.5px;
+  font-size: 22px;
 }
 
 h3 {
-  font-size: 24.5px;
+  font-size: 20px;
 }
 
 h4 {
@@ -806,11 +806,28 @@ h4 small {
 .page-header {
   width:100%;
   background-color: #EFF5FB;
+  background-image: url('../img/header.png');
+  background-position: left center;
+  background-repeat: no-repeat;
   height: 110px; /* height of the background image? */
-  padding-top: 10px;
+  padding-top: 5px;  
   margin-right: auto;
   margin-left: auto;
   border-bottom: 2px solid #eeeeee;
+  text-align: center;  
+}
+
+.page-header h1 {
+  color: #1F5C99;
+  position:relative;
+  top: 60px;
+  left: 230px;
+}
+
+th h4{
+  font-weight: bold;
+  font-size: 20px;
+  margin: 2px 0;
 }
 
 ul,
@@ -2008,6 +2025,19 @@ table {
 .table {
   width: 100%;
   margin-bottom: 20px;
+}
+
+th {
+	font-family: Calibri;
+	font-size: 14px;
+	font-weight: bold;
+	background-color: #B2E6FF;
+}
+td {
+	font-family: Calibri;
+	font-size: 14px;
+    background-color: #FBFFFF;
+	padding: 5px;
 }
 
 .table th,

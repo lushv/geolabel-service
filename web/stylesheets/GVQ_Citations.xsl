@@ -7,7 +7,7 @@
             <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
                 <title>Citations</title>
-                <link href="/stylesheets/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+                <link href="/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
             </head>
             <body>
 				<div class="page-header">
