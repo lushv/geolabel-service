@@ -1982,7 +1982,7 @@ legend + .control-group {
 
 .form-horizontal .control-label {
   float: left;
-  width: 160px;
+  width: 180px;
   padding-top: 5px;
   text-align: right;
 }
@@ -1990,12 +1990,12 @@ legend + .control-group {
 .form-horizontal .controls {
   *display: inline-block;
   *padding-left: 20px;
-  margin-left: 180px;
+  margin-left: 200px;
   *margin-left: 0;
 }
 
 .form-horizontal .controls:first-child {
-  *padding-left: 180px;
+  *padding-left: 200px;
 }
 
 .form-horizontal .help-block {
@@ -6202,8 +6202,12 @@ a.badge:focus {
 
 /* ---------------------------------------   CUSTOM STYLING   ------------------------------------------------ */
 
-#submit_btn_1 {
+#submit_btn_1, #submit_btn_2, #submit_btn_3 {
   margin: 0px 0px 0px 370px;
+}
+
+#metadata_url_3, #target_code_3, #target_codespace_3 {
+  width: 285px;
 }
 
 .geolabel-result {
