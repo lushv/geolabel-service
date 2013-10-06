@@ -18,7 +18,7 @@
                     <xsl:value-of select="$fileID" />
                 </h2>
 				
-				<xsl:for-each select="//gvq:GVQ_Publication">
+				<xsl:for-each select="//gvq:GVQ_Publication | //gmd19157:sourceCitation/gmd:CI_Citation">
 					<table width="95%" border="2" cellpadding="5" cellspacing="2">
 						<xsl:call-template name="pub"/>
 					</table>

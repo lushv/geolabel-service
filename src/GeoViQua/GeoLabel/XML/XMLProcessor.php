@@ -41,6 +41,7 @@ class XMLProcessor{
 	private $citationsXPath = 
 						'//*[local-name()=\'LI_Lineage\']/*[local-name()=\'processStep\']//*[local-name()=\'sourceCitation\']/*[local-name()=\'CI_Citation\'] | 
 						//*[local-name()=\'identificationInfo\']/*[local-name()=\'GVQ_DataIdentification\']/*[local-name()=\'referenceDoc\']/*[local-name()=\'GVQ_Publication\'] | 
+						//*[local-name()=\'identificationInfo\']/*[local-name()=\'MD_DataIdentification\']/*[local-name()=\'referenceDoc\']/*[local-name()=\'GVQ_Publication\'] | 
 						//*[local-name()=\'dataQualityInfo\']/*[local-name()=\'GVQ_DataQuality\']/*[local-name()=\'report\']//*[local-name()=\'referenceDoc\']/*[local-name()=\'GVQ_Publication\'] | 
 						//*[local-name()=\'discoveredIssue\']/*[local-name()=\'GVQ_DiscoveredIssue\']//*[local-name()=\'referenceDoc\']/*[local-name()=\'GVQ_Publication\'] | 
 						//*[local-name()=\'item\']/*[local-name()=\'citation\'] | 
@@ -57,8 +58,9 @@ class XMLProcessor{
 						'//*[local-name()=\'LI_Lineage\']//*[local-name()=\'processStep\'] | //*[local-name()=\'lineage\']//*[local-name()=\'processStep\']';
 	// Producer Comments:
 	private $supplementalInformationXPath = 
-						'//*[local-name()=\'identificationInfo\']//*[local-name()=\'supplementalInformation\'] | 
-						//*[local-name()=\'dataQualityInfo\']//*[local-name()=\'GVQ_DiscoveredIssue\']/*[local-name()=\'knownProblem\']';
+						'//*[local-name()=\'identificationInfo\']//*[local-name()=\'supplementalInformation\']';
+	private $knownProblemsXPath = 
+						'//*[local-name()=\'dataQualityInfo\']//*[local-name()=\'GVQ_DiscoveredIssue\']/*[local-name()=\'knownProblem\']';
 	// Standards Complaince:
 	private $standardNameXPath = 
 						'//*[local-name()=\'metadataStandardName\'] | //*[local-name()=\'metstdv\']';
