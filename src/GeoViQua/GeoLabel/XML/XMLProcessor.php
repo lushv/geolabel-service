@@ -516,7 +516,7 @@ class XMLProcessor{
 			}
 		}
 		if(!empty($result)){
-			$average = array_sum($result)/count($result);
+			$average = round(array_sum($result)/count($result), 1);
 		}
 		return $average;
 	}
