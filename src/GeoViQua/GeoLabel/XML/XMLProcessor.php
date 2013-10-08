@@ -116,7 +116,7 @@ class XMLProcessor{
 		$availabilityArray = array(
 								'producerProfile' => $this->getAvailabilityInteger($xml, $this->producerProfileXpath),
 								'lineage' => $this->getAvailabilityInteger($xml, $this->lineageXPath),
-								'produerComments' => $this->getAvailabilityInteger($xml, $this->producerCommentsXPath),
+								'producerComments' => $this->getAvailabilityInteger($xml, $this->producerCommentsXPath),
 								'standardsComplaince' => $this->getAvailabilityInteger($xml, $this->standardsXPath),
 								'qualityInformation' => $this->getAvailabilityInteger($xml, $this->qualityXPath),
 								'userFeedback' => $this->getAvailabilityInteger($xml, $this->feedbackXPath),
@@ -138,35 +138,35 @@ class XMLProcessor{
 		if(empty($xml)){
 			return null;
 		}
-		$producerProfileText = 'Producer Profile';
-		$lineageText = 'Lineage Information';
-		$produerCommentsText = 'Producer Comments';
-		$standardsComplainceText = 'Standards Compliance';
-		$qualityInformationText = 'Quality Information';
-		$userFeedbackText = 'User Feedback';
-		$expertReviewText = 'Expert Review';
-		$citationsText = 'Citations Information';
+		$producerProfileText = 'Producer Profile.' . PHP_EOL;
+		$lineageText = 'Lineage Information.' . PHP_EOL;
+		$producerCommentsText = 'Producer Comments:' . PHP_EOL;
+		$standardsComplainceText = 'Standards Compliance.' . PHP_EOL;
+		$qualityInformationText = 'Quality Information.' . PHP_EOL;
+		$userFeedbackText = 'User Feedback.' . PHP_EOL;
+		$expertReviewText = 'Expert Review.' . PHP_EOL;
+		$citationsText = 'Citations Information.' . PHP_EOL;
 		
 		$organisationName =$this->getFirstNode($xml, $this->organisationNameXPath);
 		if(!empty($organisationName)){
-			$producerProfileText .= '. Organisation name: '.$organisationName.'.';
+			$producerProfileText .= 'Organisation name: '.$organisationName.'.';
 		}
 		$lineageAvailability = $this->getAvailabilityInteger($xml, $this->lineageXPath);
 		$processStepCount = $this->countElements($xml, $this->processStepCountXPath);
 		if(!empty($lineageAvailability)){
-			$lineageText .= '. Number of process steps: '.$processStepCount.'.';
+			$lineageText .= 'Number of process steps: '.$processStepCount.'.';
 		}
 		$supplementalInformation = $this->getFirstNode($xml, $this->supplementalInformationXPath);
 		if(!empty($supplementalInformation)){
 			if(strlen($supplementalInformation) > 350){
 				$supplementalInformation = substr($supplementalInformation, 0, 350).'...';
 			}
-			$produerCommentsText .= ': '.$supplementalInformation;
+			$producerCommentsText .= $supplementalInformation;
 		}		
 		$standardName = $this->getFirstNode($xml, $this->standardNameXPath);
 		$standardVersion = $this->getFirstNode($xml, $this->standardVersionXPath);
 		if(!empty($standardName)){
-			$standardsComplainceText .= ". Standard name: $standardName";
+			$standardsComplainceText .= "Standard name: $standardName";
 			if(!empty($standardVersion)){
 				$standardsComplainceText .= ", version $standardVersion.";
 			}
@@ -177,31 +177,31 @@ class XMLProcessor{
 		$qualityAvailability = $this->getAvailabilityInteger($xml, $this->qualityXPath);
 		$scopeLevel = $this->getFirstNode($xml, $this->scopeLevelXPath);
 		if(!empty($scopeLevel) && !empty($qualityAvailability)){
-			$qualityInformationText .= ". Available at a $scopeLevel level.";
+			$qualityInformationText .= "Available at a $scopeLevel level.";
 		}
 		$feedbacksCount = $this->countElements($xml, $this->feedbacksCountXPath);
 		if(!empty($feedbacksCount)){
 			$ratingsCount = $this->countElements($xml, $this->ratingsCountXPath);
 			$feedbacksAverageRating = $this->getAverageRating($xml, $this->ratingsCountXPath);
 			$feedbacksAverageRating = round($feedbacksAverageRating, 2);
-			$userFeedbackText .= ". Number of feedbacks $feedbacksCount. Average rating: $feedbacksAverageRating ($ratingsCount ratings).";
+			$userFeedbackText .= "Number of feedbacks $feedbacksCount. Average rating: $feedbacksAverageRating ($ratingsCount ratings).";
 		}
 		$expertReviewsCount = $this->countElements($xml, $this->expertReviewsCountXPath);
 		if(!empty($expertReviewsCount)){
 			$expertRatingsCount = $this->countElements($xml, $this->expertRatingsCountXPath);
 			$expertAverageRating = $this->getAverageRating($xml, $this->expertRatingsCountXPath);
 			$expertAverageRating = round($expertAverageRating, 2);
-			$expertReviewText .= ". Number of reviews: $expertReviewsCount. Average rating: $expertAverageRating ($expertRatingsCount ratings).";
+			$expertReviewText .= "Number of reviews: $expertReviewsCount. Average rating: $expertAverageRating ($expertRatingsCount ratings).";
 		}
 		$citationsCount = $this->countElements($xml, $this->citationsCountXPath);
 		if(!empty($citationsCount)){
-			$citationsText .= ". Number of citations: $citationsCount.";
+			$citationsText .= "Number of citations: $citationsCount.";
 		}
 					
 		$hoveroverArray = array(
 								'producerProfile' => $producerProfileText,
 								'lineage' => $lineageText,
-								'produerComments' => $produerCommentsText,
+								'producerComments' => $producerCommentsText,
 								'standardsComplaince' => $standardsComplainceText,
 								'qualityInformation' => $qualityInformationText,
 								'userFeedback' => $userFeedbackText,
@@ -258,7 +258,7 @@ class XMLProcessor{
 									'availability' => $this->getAvailabilityInteger($xml, $this->producerProfileXpath),
 									'organisationName' => $this->getFirstNode($xml, $this->organisationNameXPath),
 								),
-								'produerComments' => array(
+								'producerComments' => array(
 									'availability' => $this->getAvailabilityInteger($xml, $this->producerCommentsXPath),
 									'supplementalInformation' => $this->getFirstNode($xml, $this->supplementalInformationXPath),
 									'supplementalInformationType' => "",
@@ -309,7 +309,7 @@ class XMLProcessor{
 		$staticURLsArray = array(
 								'producerProfile' => $producerURL,
 								'lineage' => $producerURL,
-								'produerComments' => $producerURL,
+								'producerComments' => $producerURL,
 								'standardsComplaince' => $producerURL,
 								'qualityInformation' => $producerURL,
 								'userFeedback' => $feedbackURL,
@@ -358,7 +358,7 @@ class XMLProcessor{
 		
 		// Construct drilldown URLs
 		$producerProfileURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet=' . 'producer_profile';
-		$produerCommentsURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet=' . 'producer_comments';
+		$producerCommentsURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet=' . 'producer_comments';
 		$lineageURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet='. 'lineage';
 		$standardsComplainceURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet=' . 'standards_complaince';
 		$qualityInformationURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet=' . 'quality';
@@ -370,7 +370,7 @@ class XMLProcessor{
 		$drilldownURLsArray = array(
 								'producerProfile' => $producerProfileURL,
 								'lineage' => $lineageURL,
-								'produerComments' => $produerCommentsURL,
+								'producerComments' => $producerCommentsURL,
 								'standardsComplaince' => $standardsComplainceURL,
 								'qualityInformation' => $qualityInformationURL,
 								'userFeedback' => $userFeedbackURL,

@@ -240,9 +240,9 @@ class LMLParser{
 		
 		// 3. Set producer comments elements
 		$childArray = array(
-				'glb:availability' => $availabilityArray['produerComments'],
+				'glb:availability' => $availabilityArray['producerComments'],
 				'glb:commentsText' => $hoveroverTextArray['supplementalInformation'],
-				'glb:drilldownURL' => $drilldownURLsArray['produerComments'],);
+				'glb:drilldownURL' => $drilldownURLsArray['producerComments'],);
 		$parentElement = $this->lml->createElement('http://geolabel.info', 'glb:producerComments', $childArray);
 		$this->lml->appendElement('http://geolabel.info', 'facets', $parentElement);
 		
