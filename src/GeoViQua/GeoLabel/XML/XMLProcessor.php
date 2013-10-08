@@ -116,7 +116,7 @@ class XMLProcessor{
 		$availabilityArray = array(
 								'producerProfile' => $this->getAvailabilityInteger($xml, $this->producerProfileXpath),
 								'lineage' => $this->getAvailabilityInteger($xml, $this->lineageXPath),
-								'produerComments' => $this->getAvailabilityInteger($xml, $this->producerCommentsXPath),
+								'producerComments' => $this->getAvailabilityInteger($xml, $this->producerCommentsXPath),
 								'standardsComplaince' => $this->getAvailabilityInteger($xml, $this->standardsXPath),
 								'qualityInformation' => $this->getAvailabilityInteger($xml, $this->qualityXPath),
 								'userFeedback' => $this->getAvailabilityInteger($xml, $this->feedbackXPath),
@@ -140,7 +140,7 @@ class XMLProcessor{
 		}
 		$producerProfileText = 'Producer Profile.' . PHP_EOL;
 		$lineageText = 'Lineage Information.' . PHP_EOL;
-		$produerCommentsText = 'Producer Comments:' . PHP_EOL;
+		$producerCommentsText = 'Producer Comments:' . PHP_EOL;
 		$standardsComplainceText = 'Standards Compliance.' . PHP_EOL;
 		$qualityInformationText = 'Quality Information.' . PHP_EOL;
 		$userFeedbackText = 'User Feedback.' . PHP_EOL;
@@ -161,7 +161,7 @@ class XMLProcessor{
 			if(strlen($supplementalInformation) > 350){
 				$supplementalInformation = substr($supplementalInformation, 0, 350).'...';
 			}
-			$produerCommentsText .= $supplementalInformation;
+			$producerCommentsText .= $supplementalInformation;
 		}		
 		$standardName = $this->getFirstNode($xml, $this->standardNameXPath);
 		$standardVersion = $this->getFirstNode($xml, $this->standardVersionXPath);
@@ -201,7 +201,7 @@ class XMLProcessor{
 		$hoveroverArray = array(
 								'producerProfile' => $producerProfileText,
 								'lineage' => $lineageText,
-								'produerComments' => $produerCommentsText,
+								'producerComments' => $producerCommentsText,
 								'standardsComplaince' => $standardsComplainceText,
 								'qualityInformation' => $qualityInformationText,
 								'userFeedback' => $userFeedbackText,
@@ -258,7 +258,7 @@ class XMLProcessor{
 									'availability' => $this->getAvailabilityInteger($xml, $this->producerProfileXpath),
 									'organisationName' => $this->getFirstNode($xml, $this->organisationNameXPath),
 								),
-								'produerComments' => array(
+								'producerComments' => array(
 									'availability' => $this->getAvailabilityInteger($xml, $this->producerCommentsXPath),
 									'supplementalInformation' => $this->getFirstNode($xml, $this->supplementalInformationXPath),
 									'supplementalInformationType' => "",
@@ -309,7 +309,7 @@ class XMLProcessor{
 		$staticURLsArray = array(
 								'producerProfile' => $producerURL,
 								'lineage' => $producerURL,
-								'produerComments' => $producerURL,
+								'producerComments' => $producerURL,
 								'standardsComplaince' => $producerURL,
 								'qualityInformation' => $producerURL,
 								'userFeedback' => $feedbackURL,
@@ -358,7 +358,7 @@ class XMLProcessor{
 		
 		// Construct drilldown URLs
 		$producerProfileURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet=' . 'producer_profile';
-		$produerCommentsURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet=' . 'producer_comments';
+		$producerCommentsURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet=' . 'producer_comments';
 		$lineageURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet='. 'lineage';
 		$standardsComplainceURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet=' . 'standards_complaince';
 		$qualityInformationURL = $drilldown_base_url . 'metadata=' . $producerURL . '&facet=' . 'quality';
@@ -370,7 +370,7 @@ class XMLProcessor{
 		$drilldownURLsArray = array(
 								'producerProfile' => $producerProfileURL,
 								'lineage' => $lineageURL,
-								'produerComments' => $produerCommentsURL,
+								'producerComments' => $producerCommentsURL,
 								'standardsComplaince' => $standardsComplainceURL,
 								'qualityInformation' => $qualityInformationURL,
 								'userFeedback' => $userFeedbackURL,
