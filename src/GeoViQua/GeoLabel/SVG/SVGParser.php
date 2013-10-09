@@ -202,7 +202,7 @@ class SVGParser{
 			
 			$labelSVG .= $this->svg->getFacet('producer_profile', $availabilityArray['producerProfile'], $hoveroverTextArray['producerProfile'], $drilldownURLsArray['producerProfile']);
 			$labelSVG .= $this->svg->getFacet('lineage', $availabilityArray['lineage'], $hoveroverTextArray['lineage'], $drilldownURLsArray['lineage']);
-			$labelSVG .= $this->svg->getFacet('producer_comments', $availabilityArray['produerComments'], $hoveroverTextArray['produerComments'], $drilldownURLsArray['produerComments']);
+			$labelSVG .= $this->svg->getFacet('producer_comments', $availabilityArray['producerComments'], $hoveroverTextArray['producerComments'], $drilldownURLsArray['producerComments']);
 			$labelSVG .= $this->svg->getFacet('standards_compliance', $availabilityArray['standardsComplaince'], $hoveroverTextArray['standardsComplaince'], $drilldownURLsArray['standardsComplaince']);
 			$labelSVG .= $this->svg->getFacet('quality_information', $availabilityArray['qualityInformation'], $hoveroverTextArray['qualityInformation'], $drilldownURLsArray['qualityInformation']);
 			$labelSVG .= $this->svg->getFacet('user_feedback', $availabilityArray['userFeedback'], $hoveroverTextArray['userFeedback'], $drilldownURLsArray['userFeedback']);
