@@ -90,6 +90,7 @@ class XMLProcessor{
 	private $citationsCountXPath = 
 						'//*[local-name()=\'LI_Lineage\']/*[local-name()=\'processStep\']//*[local-name()=\'sourceCitation\']/*[local-name()=\'CI_Citation\'] | 
 						//*[local-name()=\'identificationInfo\']/*[local-name()=\'GVQ_DataIdentification\']/*[local-name()=\'referenceDoc\']/*[local-name()=\'GVQ_Publication\'] | 
+						//*[local-name()=\'identificationInfo\']/*[local-name()=\'MD_DataIdentification\']/*[local-name()=\'referenceDoc\']/*[local-name()=\'GVQ_Publication\'] | 
 						//*[local-name()=\'dataQualityInfo\']/*[local-name()=\'GVQ_DataQuality\']/*[local-name()=\'report\']//*[local-name()=\'referenceDoc\']/*[local-name()=\'GVQ_Publication\'] | 
 						//*[local-name()=\'discoveredIssue\']/*[local-name()=\'GVQ_DiscoveredIssue\']//*[local-name()=\'referenceDoc\']/*[local-name()=\'GVQ_Publication\'] | 
 						//*[local-name()=\'item\']/*[local-name()=\'citation\'] | 

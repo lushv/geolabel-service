@@ -22,7 +22,7 @@
                     table {
                     empty-cells : show;
                     }></style>
-                <title>ISO Table View</title>
+                <title>Quality Information</title>
                 <link href="/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"></link>
             </head>
             <body>

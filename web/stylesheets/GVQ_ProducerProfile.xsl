@@ -17,7 +17,7 @@
 				<h2>Dataset identifier:
                     <xsl:value-of select="$fileID" />
                 </h2>
-				<xsl:for-each select="//gmd:contact/gmd:CI_ResponsibleParty">
+				<xsl:for-each select="//gmd:contact/gmd:CI_ResponsibleParty | //gmd:pointOfContact/gmd:CI_ResponsibleParty">
 						<xsl:call-template name="producerProf"/>
 				</xsl:for-each>
 				<br />
