@@ -19,10 +19,8 @@ class XMLProcessor{
 	private $fileIdentifierXPath = '//*[local-name()=\'fileIdentifier\']/*[local-name()=\'CharacterString\']';
 
 	// XPath expressions for each GEO label informational aspect - availability XPaths:						
-	private $producerProfileXpath = 
-						'//*[local-name()=\'contact\']/*[local-name()=\'CI_ResponsibleParty\'] | 
-						//*[local-name()=\'ptcontac\']/*[local-name()=\'cntinfo\'] | 
-						//*[local-name()=\'pointOfContact\']/*[local-name()=\'CI_ResponsibleParty\']';
+	private $producerProfileXpath;
+						
 	private $lineageXPath = 
 						'//*[local-name()=\'LI_Lineage\'] | //*[local-name()=\'lineage\']';
 	private $producerCommentsXPath = 
@@ -101,8 +99,15 @@ class XMLProcessor{
 	
 	/* Constructor
 	*/
-	public function __construct(){
-
+	public function __construct($app){
+		$this->producerProfileXpath = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["producerProfile"]["availabilityPath"];
+		
+		// "//*:contact/*:CI_ResponsibleParty | //*:ptcontac/*:cntinfo | //*:pointOfContact/*:CI_ResponsibleParty"
+		//'//*[local-name()=\'contact\']/*[local-name()=\'CI_ResponsibleParty\'] | 
+		//				//*[local-name()=\'ptcontac\']/*[local-name()=\'cntinfo\'] | 
+		//				//*[local-name()=\'pointOfContact\']/*[local-name()=\'CI_ResponsibleParty\']';
+		
+		
 	}
 
 	/* Function getAvailabilityEncodings

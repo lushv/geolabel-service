@@ -1,0 +1,79 @@
+{"transformerGVQ": {
+
+	"transformationDescription": {
+		
+		"namespaceMappings": {
+			"mapping": [
+				{"prefix": "gmd", "namespace": "http://www.isotc211.org/2005/gmd"},
+				{"prefix": "gvq", "namespace": "http://www.geoviqua.org/QualityInformationModel/3.1"},
+				{"prefix": "gmd19157", "namespace": "http://www.geoviqua.org/gmd19157"}
+			]
+		},
+
+		"facetDescriptions": {
+			
+			"producerComments": {
+				"availabilityPath": "//gvq:dataQualityInfo//gvq:GVQ_DiscoveredIssue/gvq:knownProblem",
+				"hoverover": {
+					"template": "",
+					"producerCommentsPath": "//gvq:dataQualityInfo//gvq:GVQ_DiscoveredIssue/gvq:knownProblem"
+				},
+				"drilldown": {
+					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=producer_profile"
+				}
+			},
+			
+			"qualityInformation": {
+				"availabilityPath": "//gvq:dataQualityInfo/gvq:GVQ_DataQuality",
+				"hoverover": {
+					"template": "",
+					"scopeLevelPath": "//gvq:dataQualityInfo/gvq:GVQ_DataQuality/gmd19157:scope//gmd:MD_ScopeCode/@codeListValue"
+				},
+				"drilldown": {
+					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=producer_profile"
+				}
+			},
+			
+			"userFeedback": {
+				"availabilityPath": "//gvq:item/gvq:user[gvq:expertiseLevel <= 3] | //gvq:item/gvq:user[not(gvq:expertiseLevel[text()])] | //gvq:item[not(gvq:user[node()])]",
+				"hoverover": {
+					"template": "",
+					"feedbackSummary": {
+						"feedbacksCountPath": "count(//gvq:item/gvq:user[gvq:expertiseLevel < 4] | //gvq:item/gvq:user[not(gvq:expertiseLevel[text()])] | //gvq:item[not(gvq:user[node()])])",
+						"ratingsCountPath": "count(//gvq:item/gvq:user[gvq:expertiseLevel < 4]/../gvq:rating/gvq:score | //gvq:item/gvq:user[not(gvq:expertiseLevel[text()])]/../gvq:rating/gvq:score | //gvq:item[not(gvq:user[node()])]/gvq:rating/gvq:score)",
+						"averageRatingPath": "avg(//gvq:item/gvq:user[gvq:expertiseLevel < 4]/../gvq:rating/gvq:score | //gvq:item/gvq:user[not(gvq:expertiseLevel[text()])]/../gvq:rating/gvq:score | //gvq:item[not(gvq:user[node()])]/gvq:rating/gvq:score)"
+					}
+				},
+				"drilldown": {
+					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=producer_profile"
+				}
+			},
+			
+			"expertReview": {
+				"availabilityPath": "//gvq:item/gvq:user[gvq:expertiseLevel > 3]",
+				"hoverover": {
+					"template": "",
+					"feedbackSummary": {
+						"feedbacksCountPath": "count(//gvq:item/gvq:user[gvq:expertiseLevel > 3])",
+						"ratingsCountPath": "count(//gvq:item/gvq:user[gvq:expertiseLevel > 3]/../gvq:rating/gvq:score)",
+						"averageRatingPath": "avg(//gvq:item/gvq:user[gvq:expertiseLevel > 3]/../gvq:rating/gvq:score)"
+					}
+				},
+				"drilldown": {
+					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=producer_profile"
+				}
+			},
+			
+			"citations": {
+				"availabilityPath": "//gmd:identificationInfo/gvq:GVQ_DataIdentification/*:referenceDoc/gvq:GVQ_Publication | //gvq:dataQualityInfo/gvq:GVQ_DataQuality/*:report//*:referenceDoc/gvq:GVQ_Publication | //*:discoveredIssue/gvq:GVQ_DiscoveredIssue//*:referenceDoc/gvq:GVQ_Publication | //gvq:item/*:citation | //gvq:item/gvq:usage//*:referenceDoc/gvq:GVQ_Publication",
+				"hoverover": {
+					"template": "",
+					"citationsCountPath": "count(//gmd:identificationInfo/gvq:GVQ_DataIdentification/*:referenceDoc/gvq:GVQ_Publication | //gvq:dataQualityInfo/gvq:GVQ_DataQuality/*:report//*:referenceDoc/gvq:GVQ_Publication | //*:discoveredIssue/gvq:GVQ_DiscoveredIssue//*:referenceDoc/gvq:GVQ_Publication | //gvq:item/*:citation  | //gvq:item/gvq:usage//*:referenceDoc/gvq:GVQ_Publication)"
+				},
+				"drilldown": {
+					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=producer_profile"
+				}
+			}
+		}
+	}}
+}

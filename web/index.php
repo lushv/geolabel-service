@@ -10,6 +10,9 @@ use Symfony\Component\HttpFoundation\Response as Response;
 use Symfony\Component\HttpFoundation\Request as Request;
 
 $app = new Silex\Application();
+$app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__."/../config/transformerRest.json"));
+$app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__."/../config/transformerGVQ.json"));
+
 // enable error messages
 //$app['debug'] = true;
 error_reporting(E_ERROR);
@@ -26,13 +29,13 @@ $app->get('/', function() {
 
 // ************************************  GET and POST to obtain GEO label representation  ****************************************
 
-$app->get('/api/v1/geolabel', function(Request $request) {
+$app->get('/api/v1/geolabel', function(Request $request) use ($app) {
 	$metadataURL = $request->query->get('metadata');
 	$feedbackURL = $request->query->get('feedback');
 	if(empty($metadataURL) && empty($feedbackURL)){
 		return new Response('<b>Bad request:</b> "metadata" and "feedback" query parameters are missing.', 400);
 	}
-	$xmlProcessor = new XMLProcessor();
+	$xmlProcessor = new XMLProcessor($app);
 	$metadataXML = null;
 	$feedbackXML = null;
     $size = $request->query->get('size');

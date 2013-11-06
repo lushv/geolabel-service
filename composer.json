@@ -19,7 +19,8 @@
         "symfony/twig-bridge": "~2.1",
         "doctrine/dbal": ">=2.2.0,<2.4.0-dev",
         "swiftmailer/swiftmailer": "5.*",
-		"silex/web-profiler": "~1.0"
+		"silex/web-profiler": "~1.0",
+		"igorw/config-service-provider": "v1.2.1"
     },
     "autoload": {
         "psr-0": {
