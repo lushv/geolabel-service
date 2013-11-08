@@ -102,6 +102,8 @@ class XMLProcessor{
 	public function __construct($app){
 		$this->producerProfileXpath = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["producerProfile"]["availabilityPath"];
 		
+		//die(var_dump($this->producerProfileXpath));
+		
 		// "//*:contact/*:CI_ResponsibleParty | //*:ptcontac/*:cntinfo | //*:pointOfContact/*:CI_ResponsibleParty"
 		//'//*[local-name()=\'contact\']/*[local-name()=\'CI_ResponsibleParty\'] | 
 		//				//*[local-name()=\'ptcontac\']/*[local-name()=\'cntinfo\'] | 
@@ -121,6 +123,9 @@ class XMLProcessor{
 		if(empty($xml)){
 			return null;
 		}
+		
+		//die(var_dump($this->producerProfileXpath));
+		
 		$availabilityArray = array(
 								'producerProfile' => $this->getAvailabilityInteger($xml, $this->producerProfileXpath),
 								'lineage' => $this->getAvailabilityInteger($xml, $this->lineageXPath),
@@ -456,6 +461,15 @@ class XMLProcessor{
 			return $availability;
 		}
 		$xpath = new DOMXpath($xml);
+		
+		$xpath->registerNamespace("gmd", "http://www.isotc211.org/2005/gmd");
+		$xpath->registerNamespace("gco", "http://www.isotc211.org/2005/gco");
+        $xpath->registerNamespace("gml", "http://www.opengis.net/gml");
+        $xpath->registerNamespace("gts", "http://www.isotc211.org/2005/gts");
+        $xpath->registerNamespace("srv", "http://www.isotc211.org/2005/srv");
+        $xpath->registerNamespace("geonet", "http://www.fao.org/geonetwork");
+        $xpath->registerNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+				
 		$nodes = $xpath->query($path);
 		
 		if ($nodes->length > 0){

@@ -17,10 +17,6 @@ class SVGParser{
 	private $svg;
 	private $xmlProcessor;
 	
-	//private $availabilityArray;
-	//private $hoveroverTextArray;
-	//private $drilldownURLsArray;
-	
 	/* Constructor
 	*/
 	public function __construct(){
@@ -28,37 +24,44 @@ class SVGParser{
 		$this->xmlProcessor = new XMLProcessor();
 	}
 
-	/* Function constructFromURLFiles
-	 * Constructs a full SVG representation of the GEO label from two URLs
+	/* Function constructSVG
+	 * Constructs a full LML representation of the GEO label from an aggregated XML file
+	 * This function takes the URL of the XML file as it is provided. It assumes that the 
+	 * URL is not the URL of the actual XML document but a link to some related documentation.
 	 * 
-	 * @param $producerURL String URL of the producer document
-	 * @param $feedbackURL String URL of the feedback document
+	 * @param $availabilityArray array of availability encodings
+	 * @param $hoveroverTextArray array of 
+	 * @param $drilldownURLsArray String URL of the document
 	 * @param $size String size
-	 * @return String svg representation of the GEO label if generated successfully
+	 * @return String svg representation of the GEO label
 	 */
-	public function constructFromURLFiles($producerXML, $producerURL, $feedbackXML, $feedbackURL, $size){
-		// Join two documents
-		$gvqXML = null;
-		if(!empty($producerXML) && !empty($feedbackXML)){
-			$gvqXML = $this->xmlProcessor->joinXMLDoms($producerXML, $feedbackXML);
+	public function constructSVG($availabilityArray, $hoveroverTextArray, $drilldownURLsArray, $size){
+		if(empty($availabilityArray) || empty($hoveroverTextArray) || empty($drilldownURLsArray)){
+			return null;
 		}
-		elseif(!empty($producerXML)){
-			$gvqXML = $producerXML;
+		if(empty($size)){
+			$size = 250;
 		}
-		elseif(!empty($feedbackXML)){
-			$gvqXML = $feedbackXML;
-		}		
-		// Get all data from the XML document into 3 arrays
-		$availabilityArray = $this->xmlProcessor->getAvailabilityEncodings($gvqXML);
-		$hoveroverTextArray = $this->xmlProcessor->getHoveroverText($gvqXML);
-		$drilldownURLsArray = $this->xmlProcessor->getDrilldownURLs($producerURL, $feedbackURL);
-		
-		$labelSVG = $this->constructSVG($availabilityArray, $hoveroverTextArray, $drilldownURLsArray, $size);
+		$labelSVG = $this->svg->getHeader($size);
+		$labelSVG .= $this->svg->getFacetsGroupOpeningTag();
+			
+			$labelSVG .= $this->svg->getFacet('producer_profile', $availabilityArray['producerProfile'], $hoveroverTextArray['producerProfile'], $drilldownURLsArray['producerProfile']);
+			$labelSVG .= $this->svg->getFacet('lineage', $availabilityArray['lineage'], $hoveroverTextArray['lineage'], $drilldownURLsArray['lineage']);
+			$labelSVG .= $this->svg->getFacet('producer_comments', $availabilityArray['producerComments'], $hoveroverTextArray['producerComments'], $drilldownURLsArray['producerComments']);
+			$labelSVG .= $this->svg->getFacet('standards_compliance', $availabilityArray['standardsComplaince'], $hoveroverTextArray['standardsComplaince'], $drilldownURLsArray['standardsComplaince']);
+			$labelSVG .= $this->svg->getFacet('quality_information', $availabilityArray['qualityInformation'], $hoveroverTextArray['qualityInformation'], $drilldownURLsArray['qualityInformation']);
+			$labelSVG .= $this->svg->getFacet('user_feedback', $availabilityArray['userFeedback'], $hoveroverTextArray['userFeedback'], $drilldownURLsArray['userFeedback']);
+			$labelSVG .= $this->svg->getFacet('expert_review', $availabilityArray['expertReview'], $hoveroverTextArray['expertReview'], $drilldownURLsArray['expertReview']);
+			$labelSVG .= $this->svg->getFacet('citations_information', $availabilityArray['citations'], $hoveroverTextArray['citations'], $drilldownURLsArray['citations']);
+
+		$labelSVG .= $this->svg->getGroupClosingTag();
+		$labelSVG .= $this->svg->getBrandingGroupOpeningTag();
+			$labelSVG .= $this->svg->getBranding();
+		$labelSVG .= $this->svg->getGroupClosingTag();
+		$labelSVG .= $this->svg->getFooter();
 		
 		return $labelSVG;
 	}
-	
-	
 	
 	/* Function constructFromAggregatedXML
 	 * Constructs a full LML representation of the GEO label from an aggregated XML file
@@ -179,41 +182,34 @@ class SVGParser{
 		return $labelSVG;
 	}
 	
-	/* Function constructSVG
-	 * Constructs a full LML representation of the GEO label from an aggregated XML file
-	 * This function takes the URL of the XML file as it is provided. It assumes that the 
-	 * URL is not the URL of the actual XML document but a link to some related documentation.
+	// ****************************************************   UNUSED FUNCTIONS   *************************************************************
+	
+	/* Function constructFromURLFiles
+	 * Constructs a full SVG representation of the GEO label from two URLs
 	 * 
-	 * @param $availabilityArray array of availability encodings
-	 * @param $hoveroverTextArray array of 
-	 * @param $drilldownURLsArray String URL of the document
+	 * @param $producerURL String URL of the producer document
+	 * @param $feedbackURL String URL of the feedback document
 	 * @param $size String size
-	 * @return String svg representation of the GEO label
+	 * @return String svg representation of the GEO label if generated successfully
 	 */
-	public function constructSVG($availabilityArray, $hoveroverTextArray, $drilldownURLsArray, $size){
-		if(empty($availabilityArray) || empty($hoveroverTextArray) || empty($drilldownURLsArray)){
-			return null;
+	public function constructFromURLFiles($producerXML, $producerURL, $feedbackXML, $feedbackURL, $size){
+		// Join two documents
+		$gvqXML = null;
+		if(!empty($producerXML) && !empty($feedbackXML)){
+			$gvqXML = $this->xmlProcessor->joinXMLDoms($producerXML, $feedbackXML);
 		}
-		if(empty($size)){
-			$size = 250;
+		elseif(!empty($producerXML)){
+			$gvqXML = $producerXML;
 		}
-		$labelSVG = $this->svg->getHeader($size);
-		$labelSVG .= $this->svg->getFacetsGroupOpeningTag();
-			
-			$labelSVG .= $this->svg->getFacet('producer_profile', $availabilityArray['producerProfile'], $hoveroverTextArray['producerProfile'], $drilldownURLsArray['producerProfile']);
-			$labelSVG .= $this->svg->getFacet('lineage', $availabilityArray['lineage'], $hoveroverTextArray['lineage'], $drilldownURLsArray['lineage']);
-			$labelSVG .= $this->svg->getFacet('producer_comments', $availabilityArray['producerComments'], $hoveroverTextArray['producerComments'], $drilldownURLsArray['producerComments']);
-			$labelSVG .= $this->svg->getFacet('standards_compliance', $availabilityArray['standardsComplaince'], $hoveroverTextArray['standardsComplaince'], $drilldownURLsArray['standardsComplaince']);
-			$labelSVG .= $this->svg->getFacet('quality_information', $availabilityArray['qualityInformation'], $hoveroverTextArray['qualityInformation'], $drilldownURLsArray['qualityInformation']);
-			$labelSVG .= $this->svg->getFacet('user_feedback', $availabilityArray['userFeedback'], $hoveroverTextArray['userFeedback'], $drilldownURLsArray['userFeedback']);
-			$labelSVG .= $this->svg->getFacet('expert_review', $availabilityArray['expertReview'], $hoveroverTextArray['expertReview'], $drilldownURLsArray['expertReview']);
-			$labelSVG .= $this->svg->getFacet('citations_information', $availabilityArray['citations'], $hoveroverTextArray['citations'], $drilldownURLsArray['citations']);
-
-		$labelSVG .= $this->svg->getGroupClosingTag();
-		$labelSVG .= $this->svg->getBrandingGroupOpeningTag();
-			$labelSVG .= $this->svg->getBranding();
-		$labelSVG .= $this->svg->getGroupClosingTag();
-		$labelSVG .= $this->svg->getFooter();
+		elseif(!empty($feedbackXML)){
+			$gvqXML = $feedbackXML;
+		}		
+		// Get all data from the XML document into 3 arrays
+		$availabilityArray = $this->xmlProcessor->getAvailabilityEncodings($gvqXML);
+		$hoveroverTextArray = $this->xmlProcessor->getHoveroverText($gvqXML);
+		$drilldownURLsArray = $this->xmlProcessor->getDrilldownURLs($producerURL, $feedbackURL);
+		
+		$labelSVG = $this->constructSVG($availabilityArray, $hoveroverTextArray, $drilldownURLsArray, $size);
 		
 		return $labelSVG;
 	}

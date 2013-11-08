@@ -20,8 +20,12 @@ error_reporting(E_ERROR);
 $app->get('/', function() {
 	return '<!DOCTYPE html>
 			<html>
+				<head>
+					<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+					<meta content="utf-8" http-equiv="encoding">
+				</head>
 				<body>
-					<p>GEO label API documentation is coming soon. Meanwhile, you can test the API by using this page: <a href="http://www.geolabel.net/geolabel.html">www.geolabel.net/geolabel.html</a>.</p>
+					<p>GEO label API documentation is coming soon. Meanwhile, you can test the API by using this page: <a href="http://www.geolabel.net/demo.html">www.geolabel.net/demo.html</a>.</p>
 					<p>For more information about the GEO label please visit <a href="http://www.geolabel.info">www.geolabel.info</a>.</p>
 				</body>
 			</html>';
@@ -35,6 +39,7 @@ $app->get('/api/v1/geolabel', function(Request $request) use ($app) {
 	if(empty($metadataURL) && empty($feedbackURL)){
 		return new Response('<b>Bad request:</b> "metadata" and "feedback" query parameters are missing.', 400);
 	}
+	
 	$xmlProcessor = new XMLProcessor($app);
 	$metadataXML = null;
 	$feedbackXML = null;
@@ -61,29 +66,46 @@ $app->get('/api/v1/geolabel', function(Request $request) use ($app) {
 		}
 	}	
 	
+	// Join two documents
+	$gvqXML = null;
+	if(!empty($metadataXML) && !empty($feedbackXML)){
+		$gvqXML = $this->xmlProcessor->joinXMLDoms($metadataXML, $feedbackXML);
+	}
+	elseif(!empty($metadataXML)){
+		$gvqXML = $metadataXML;
+	}
+	elseif(!empty($feedbackXML)){
+		$gvqXML = $feedbackXML;
+	}		
+	// Get all data from the XML document into 3 arrays
+	$availabilityArray = $xmlProcessor->getAvailabilityEncodings($gvqXML);
+	$hoveroverTextArray = $xmlProcessor->getHoveroverText($gvqXML);
+	$drilldownURLsArray = $xmlProcessor->getDrilldownURLs($metadataURL, $feedbackURL);
+	
 	$svgParser = new SVGParser();
-	// Construct an svg from URL files
-	$svg = $svgParser->constructFromURLFiles($metadataXML, $metadataURL, $feedbackXML, $feedbackURL, $size);
+	$svg = $svgParser->constructSVG($availabilityArray, $hoveroverTextArray, $drilldownURLsArray, $size);
+	
 	if(empty($svg)){
 		return new Response('<b>Internal server error</b>: could not generate an SVG representation.', 500);
 	}
-	//return $svg;
+	
 	return new Response($svg, 200, array('Content-Type' => 'image/svg+xml'));
 });
 
-$app->post('/api/v1/geolabel', function (Request $request) {
-	$producerFile = $request->files->get('metadata');
+$app->post('/api/v1/geolabel', function(Request $request) use ($app) {
+	$metadataFile = $request->files->get('metadata');
 	$feedbackFile = $request->files->get('feedback');	
-	if(empty($producerFile) && empty($feedbackFile)){
+	if(empty($metadataFile) && empty($feedbackFile)){
 		return new Response('<b>Bad request:</b> "metadata" and "feedback" XML documents are missing.', 400);
 	}
-	$svgParser = new SVGParser();
-	$producerXML = null;
+
+	$xmlProcessor = new XMLProcessor($app);
+	$metadataXML = null;
 	$feedbackXML = null;
-	if(!empty($producerFile)){
+	if(!empty($metadataFile)){
 		//libxml_use_internal_errors(true);
-		$producerXML = new DOMDocument('1.0', 'utf-8');
-		if(!$producerXML->load($producerFile)){
+		$metadataXML = new DOMDocument('1.0', 'utf-8');
+		if(!$metadataXML->load($metadataFile)){
 			return new Response('<b>Bad request:</b> invalid "metadata" XML document.', 400);
 		}
 	}
@@ -94,11 +116,29 @@ $app->post('/api/v1/geolabel', function (Request $request) {
 			return new Response('<b>Bad request:</b> invalid "feedback" XML document.', 400);
 		}
 	}
-    $producerURL = $request->get('metadata_url');
+    $metadataURL = $request->get('metadata_url');
 	$feedbackURL = $request->get('feedback_url');
     $size = $request->get('size');
+		
+	// Join two documents
+	$gvqXML = null;
+	if(!empty($metadataXML) && !empty($feedbackXML)){
+		$gvqXML = $xmlProcessor->joinXMLDoms($metadataXML, $feedbackXML);
+	}
+	elseif(!empty($metadataXML)){
+		$gvqXML = $metadataXML;
+	}
+	elseif(!empty($feedbackXML)){
+		$gvqXML = $feedbackXML;
+	}
+	// Get all data from the XML document into 3 arrays
+	$availabilityArray = $xmlProcessor->getAvailabilityEncodings($gvqXML);
+	$hoveroverTextArray = $xmlProcessor->getHoveroverText($gvqXML);
+	$drilldownURLsArray = $xmlProcessor->getDrilldownURLs($metadataURL, $feedbackURL);
 	
-	$svg = $svgParser->constructFromXMLs($producerXML, $producerURL, $feedbackXML, $feedbackURL, $size);
+	$svgParser = new SVGParser();
+	$labelSVG = $svgParser($availabilityArray, $hoveroverTextArray, $drilldownURLsArray, $size);
+	
 	if(empty($svg)){
 		return new Response('<b>Internal server error</b>: could not generate an SVG representation.', 500);
 	}
@@ -238,7 +278,7 @@ $app->get('/api/v1/drilldown', function(Request $request) {
 
 // *****************************************    INSPIRE Demo    *************************************************
 
-$app->post('/api/v1/geolabel/demo', function(Request $request) {
+$app->post('/api/v1/geolabel/demo', function(Request $request) use ($app) {
 	$producerFile = $request->files->get('metadata');
 	$producerURL = $request->get('metadata_url');
 	$geonetworkID = $request->get('geonetwork_id');
@@ -285,11 +325,30 @@ $app->post('/api/v1/geolabel/demo', function(Request $request) {
 			return new Response('<b>Bad request:</b> could not retrieve an XML file from feedback server.', 400);
 		}
 	}
-	$svg = $svgParser->constructFromURLFiles($producerXML, $producerURL, $feedbackXML, $feedbackURL, $size);
+
+	// Join two documents
+	$gvqXML = null;
+	if(!empty($producerXML) && !empty($feedbackXML)){
+		$gvqXML = $this->xmlProcessor->joinXMLDoms($producerXML, $feedbackXML);
+	}
+	elseif(!empty($producerXML)){
+		$gvqXML = $producerXML;
+	}
+	elseif(!empty($feedbackXML)){
+		$gvqXML = $feedbackXML;
+	}		
+	// Get all data from the XML document into 3 arrays
+	$availabilityArray = $xmlProcessor->getAvailabilityEncodings($gvqXML);
+	$hoveroverTextArray = $xmlProcessor->getHoveroverText($gvqXML);
+	$drilldownURLsArray = $xmlProcessor->getDrilldownURLs($producerURL, $feedbackURL);
+	
+	$svgParser = new SVGParser();
+	$svg = $svgParser->constructSVG($availabilityArray, $hoveroverTextArray, $drilldownURLsArray, $size);
+	
 	if(empty($svg)){
 		return new Response('<b>Internal server error</b>: could not generate an SVG representation.', 500);
 	}
-	//return $svg;
+	
 	return new Response($svg, 200, array('Content-Type' => 'image/svg+xml'));
 });
 
