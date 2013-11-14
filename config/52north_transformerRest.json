@@ -10,7 +10,7 @@
 
 		"facetDescriptions": {
 			"producerProfile": {
-				"availabilityPath": "//*[local-name()='contact']/*[local-name()='CI_ResponsibleParty'] | //*[local-name()='ptcontac']/*[local-name()='cntinfo'] | //*[local-name()='pointOfContact']/*[local-name()='CI_ResponsibleParty']",
+				"availabilityPath": "//*:contact/*:CI_ResponsibleParty | //*:ptcontac/*:cntinfo | //*:pointOfContact/*:CI_ResponsibleParty",
 				"hoverover": {
 					"template": "",
 					"organizationNamePath": "//gmd:contact/gmd:CI_ResponsibleParty/gmd:organisationName | //gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:organisationName"

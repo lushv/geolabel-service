@@ -20,16 +20,10 @@ class XMLProcessor{
 
 	// XPath expressions for each GEO label informational aspect - availability XPaths:						
 	private $producerProfileXpath;
-						
-	private $lineageXPath = 
-						'//*[local-name()=\'LI_Lineage\'] | //*[local-name()=\'lineage\']';
-	private $producerCommentsXPath = 
-						'//*[local-name()=\'identificationInfo\']//*[local-name()=\'supplementalInformation\'] | //*[local-name()=\'dataQualityInfo\']//*[local-name()=\'GVQ_DiscoveredIssue\']/*[local-name()=\'knownProblem\']';
-	private $standardsXPath = 
-						'//*[local-name()=\'metadataStandardName\'] | //*[local-name()=\'metstdv\']';
-	private $qualityXPath = 
-						'//*[local-name()=\'dataQualityInfo\']/*[local-name()=\'GVQ_DataQuality\'] |
-						//*[local-name()=\'dataQualityInfo\']';
+	private $producerCommentsXPath;
+	private $lineageXPath;
+	private $standardsXPath;
+	private $qualityXPath;
 	private $feedbackXPath = 
 						'//*[local-name()=\'item\']/*[local-name()=\'user\'][*[local-name()=\'expertiseLevel\'] < 4] | 
 						//*[local-name()=\'item\']/*[local-name()=\'user\'][not(*[local-name()=\'expertiseLevel\'][text()])] | 
@@ -45,25 +39,17 @@ class XMLProcessor{
 						//*[local-name()=\'item\']/*[local-name()=\'citation\'] | 
 						//*[local-name()=\'item\']/*[local-name()=\'usage\']//*[local-name()=\'referenceDoc\']/*[local-name()=\'GVQ_Publication\']';
 	
-	// Xpath expressions for each GEO label informational facet - hover-over XPaths:
+	// ********************************************************   HOVER-OVER XPATHS   *********************************************************
 	// Producer Profile:
-	private $organisationNameXPath = 
-						'//*[local-name()=\'contact\']/*[local-name()=\'CI_ResponsibleParty\']/*[local-name()=\'organisationName\'] | 
-						//*[local-name()=\'ptcontac\']/*[local-name()=\'cntinfo\']//*[local-name()=\'cntorg\'] | 
-						//*[local-name()=\'pointOfContact\']/*[local-name()=\'CI_ResponsibleParty\']/*[local-name()=\'organisationName\']';
-	// Lineage Information:
-	private $processStepCountXPath = 
-						'//*[local-name()=\'LI_Lineage\']//*[local-name()=\'processStep\'] | //*[local-name()=\'lineage\']//*[local-name()=\'processStep\']';
+	private $organisationNameXPath;
 	// Producer Comments:
-	private $supplementalInformationXPath = 
-						'//*[local-name()=\'identificationInfo\']//*[local-name()=\'supplementalInformation\']';
-	private $knownProblemsXPath = 
-						'//*[local-name()=\'dataQualityInfo\']//*[local-name()=\'GVQ_DiscoveredIssue\']/*[local-name()=\'knownProblem\']';
+	private $supplementalInformationXPath;
+	private $knownProblemsXPath;
+	// Lineage Information:
+	private $processStepCountXPath;
 	// Standards Complaince:
-	private $standardNameXPath = 
-						'//*[local-name()=\'metadataStandardName\'] | //*[local-name()=\'metstdv\']';
-	private $standardVersionXPath = 
-						'//*[local-name()=\'metadataStandardVersion\']';
+	private $standardNameXPath;
+	private $standardVersionXPath;
 	// Quality Information:
 	private $scopeLevelXPath  = 
 						'//*[local-name()=\'dataQualityInfo\']/*[local-name()=\'GVQ_DataQuality\']/*[local-name()=\'scope\']
@@ -100,16 +86,53 @@ class XMLProcessor{
 	/* Constructor
 	*/
 	public function __construct($app){
-		$this->producerProfileXpath = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["producerProfile"]["availabilityPath"];
 		
-		//die(var_dump($this->producerProfileXpath));
+		// SET PRODUCER PROFILE XPATHS
+		$this->producerProfileXpath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["producerProfile"]["availabilityPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["producerProfile"]["availabilityPath"]);
 		
-		// "//*:contact/*:CI_ResponsibleParty | //*:ptcontac/*:cntinfo | //*:pointOfContact/*:CI_ResponsibleParty"
-		//'//*[local-name()=\'contact\']/*[local-name()=\'CI_ResponsibleParty\'] | 
-		//				//*[local-name()=\'ptcontac\']/*[local-name()=\'cntinfo\'] | 
-		//				//*[local-name()=\'pointOfContact\']/*[local-name()=\'CI_ResponsibleParty\']';
+		$this->organisationNameXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["producerProfile"]["hoverover"]["organizationNamePath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["producerProfile"]["hoverover"]["organizationNamePath"]);
+		
+		// SET PRODUCER COMMENTS XPATHS
+		$this->producerCommentsXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["producerComments"]["availabilityPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["producerComments"]["availabilityPath"]);
+		
+		$this->supplementalInformationXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["producerComments"]["hoverover"]["supplementalInformation"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["producerComments"]["hoverover"]["supplementalInformation"]);
+		
+		$this->knownProblemsXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["producerComments"]["hoverover"]["knownProblemsPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["producerComments"]["hoverover"]["knownProblemsPath"]);
+
+		// SET LINEAGE XPATHS
+		$this->lineageXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["lineage"]["availabilityPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["lineage"]["availabilityPath"]);
+		
+		$this->processStepCountXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["lineage"]["hoverover"]["processStepCountPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["lineage"]["hoverover"]["processStepCountPath"]);
+		
+		// SET STANDARDS XPATHS
+		$this->standardsXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["standardsCompliance"]["availabilityPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["standardsCompliance"]["availabilityPath"]);
+		
+		$this->standardNameXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["standardsCompliance"]["hoverover"]["standardNamePath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["standardsCompliance"]["hoverover"]["standardNamePath"]);
+		
+		$this->standardVersionXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["standardsCompliance"]["hoverover"]["standardVersion"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["standardsCompliance"]["hoverover"]["standardVersion"]);
+		
+		// SET QUALITY XPATHS
+		$this->qualityXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["qualityInformation"]["availabilityPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["qualityInformation"]["availabilityPath"]);
+		
+		// SET FEEDBACK XPATHS
 		
 		
+		// SET REVIEWS XPATHS
+		
+		
+		// SET CITATIONS XPATHS
+		$this->citationsXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["citations"]["availabilityPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["citations"]["availabilityPath"]);
+		
+		//die(var_dump($this->qualityXPath));
+	}
+	
+	private function joinXPaths($xPath_1, $xPath_2){
+		$xPathsArray = array();
+		array_push($xPathsArray, $xPath_1);
+		array_push($xPathsArray, $xPath_2);
+		$xPathsArray = array_filter($xPathsArray);
+		$xPath = implode(" | ", $xPathsArray);
+		return $xPath;
 	}
 
 	/* Function getAvailabilityEncodings
@@ -123,9 +146,7 @@ class XMLProcessor{
 		if(empty($xml)){
 			return null;
 		}
-		
-		//die(var_dump($this->producerProfileXpath));
-		
+				
 		$availabilityArray = array(
 								'producerProfile' => $this->getAvailabilityInteger($xml, $this->producerProfileXpath),
 								'lineage' => $this->getAvailabilityInteger($xml, $this->lineageXPath),
@@ -151,31 +172,38 @@ class XMLProcessor{
 		if(empty($xml)){
 			return null;
 		}
-		$producerProfileText = 'Producer Profile.' . PHP_EOL;
-		$lineageText = 'Lineage Information.' . PHP_EOL;
-		$producerCommentsText = 'Producer Comments:' . PHP_EOL;
-		$standardsComplainceText = 'Standards Compliance.' . PHP_EOL;
-		$qualityInformationText = 'Quality Information.' . PHP_EOL;
-		$userFeedbackText = 'User Feedback.' . PHP_EOL;
-		$expertReviewText = 'Expert Review.' . PHP_EOL;
-		$citationsText = 'Citations Information.' . PHP_EOL;
+		$producerProfileText = 'Producer Profile' . PHP_EOL;
+		$lineageText = 'Lineage Information' . PHP_EOL;
+		$producerCommentsText = 'Producer Comments' . PHP_EOL;
+		$standardsComplainceText = 'Standards Compliance' . PHP_EOL;
+		$qualityInformationText = 'Quality Information' . PHP_EOL;
+		$userFeedbackText = 'User Feedback' . PHP_EOL;
+		$expertReviewText = 'Expert Review' . PHP_EOL;
+		$citationsText = 'Citations Information' . PHP_EOL;
 		
 		$organisationName =$this->getFirstNode($xml, $this->organisationNameXPath);
 		if(!empty($organisationName)){
 			$producerProfileText .= 'Organisation name: '.$organisationName.'.';
-		}
-		$lineageAvailability = $this->getAvailabilityInteger($xml, $this->lineageXPath);
-		$processStepCount = $this->countElements($xml, $this->processStepCountXPath);
-		if(!empty($lineageAvailability)){
-			$lineageText .= 'Number of process steps: '.$processStepCount.'.';
 		}
 		$supplementalInformation = $this->getFirstNode($xml, $this->supplementalInformationXPath);
 		if(!empty($supplementalInformation)){
 			if(strlen($supplementalInformation) > 350){
 				$supplementalInformation = substr($supplementalInformation, 0, 350).'...';
 			}
-			$producerCommentsText .= $supplementalInformation;
-		}		
+			$producerCommentsText .= 'Supplemental Information: ' . $supplementalInformation . PHP_EOL;
+		}
+		$knownProblems = $this->getFirstNode($xml, $this->knownProblemsXPath);
+		if(!empty($knownProblems)){
+			if(strlen($knownProblems) > 350){
+				$knownProblems = substr($knownProblems, 0, 350).'...';
+			}
+			$producerCommentsText .= 'Known Problems: ' . $knownProblems;
+		}
+		$lineageAvailability = $this->getAvailabilityInteger($xml, $this->lineageXPath);
+		$processStepCount = $this->evaluateXPath($xml, $this->processStepCountXPath);
+		if(!empty($lineageAvailability)){
+			$lineageText .= 'Number of process steps: '.$processStepCount.'.';
+		}
 		$standardName = $this->getFirstNode($xml, $this->standardNameXPath);
 		$standardVersion = $this->getFirstNode($xml, $this->standardVersionXPath);
 		if(!empty($standardName)){
@@ -462,6 +490,7 @@ class XMLProcessor{
 		}
 		$xpath = new DOMXpath($xml);
 		
+		/*
 		$xpath->registerNamespace("gmd", "http://www.isotc211.org/2005/gmd");
 		$xpath->registerNamespace("gco", "http://www.isotc211.org/2005/gco");
         $xpath->registerNamespace("gml", "http://www.opengis.net/gml");
@@ -469,7 +498,13 @@ class XMLProcessor{
         $xpath->registerNamespace("srv", "http://www.isotc211.org/2005/srv");
         $xpath->registerNamespace("geonet", "http://www.fao.org/geonetwork");
         $xpath->registerNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-				
+		
+		$xpath->registerNamespace("updated19115", "http://www.geoviqua.org/19115_updates");
+		$xpath->registerNamespace("xlink", "http://www.w3.org/1999/xlink");
+        $xpath->registerNamespace("gvq", "http://www.geoviqua.org/QualityInformationModel/4.0");
+        $xpath->registerNamespace("gmd19157", "http://www.geoviqua.org/gmd19157");
+		*/
+		
 		$nodes = $xpath->query($path);
 		
 		if ($nodes->length > 0){
@@ -491,7 +526,6 @@ class XMLProcessor{
 	 * @param string $path XPath expression of the nodes to locate in the XML document
 	 * @return integer number of nodes discovered in the XML document.
 	 */
-	// Function to go through GEO label facet array and get nodes from the document. Returns array of Producer Comments.
 	public function countElements($xml, $path){
 		$count = 0;
 		if(empty($xml)){
@@ -509,6 +543,22 @@ class XMLProcessor{
 				}
 			}
 		}
+		return $count;
+	}
+
+	/* Returns integer number of nodes discovered in the XML document.
+	 *
+	 * @param DOMDocument $xml XML document to iterate through
+	 * @param string $path XPath expression with count()
+	 * @return integer number of nodes discovered in the XML document.
+	 */
+	public function evaluateXPath($xml, $path){
+		$count = 0;
+		if(empty($xml)){
+			return $count;
+		}
+		$xpath = new DOMXpath($xml);
+		$count = $xpath->evaluate($path);
 		return $count;
 	}
 	

@@ -137,7 +137,7 @@ $app->post('/api/v1/geolabel', function(Request $request) use ($app) {
 	$drilldownURLsArray = $xmlProcessor->getDrilldownURLs($metadataURL, $feedbackURL);
 	
 	$svgParser = new SVGParser();
-	$labelSVG = $svgParser($availabilityArray, $hoveroverTextArray, $drilldownURLsArray, $size);
+	$svg = $svgParser->constructSVG($availabilityArray, $hoveroverTextArray, $drilldownURLsArray, $size);
 	
 	if(empty($svg)){
 		return new Response('<b>Internal server error</b>: could not generate an SVG representation.', 500);

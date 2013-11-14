@@ -13,67 +13,68 @@
 				"availabilityPath": "//*[local-name()='contact']/*[local-name()='CI_ResponsibleParty'] | //*[local-name()='ptcontac']/*[local-name()='cntinfo'] | //*[local-name()='pointOfContact']/*[local-name()='CI_ResponsibleParty']",
 				"hoverover": {
 					"template": "",
-					"organizationNamePath": "//gmd:contact/gmd:CI_ResponsibleParty/gmd:organisationName | //gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:organisationName"
+					"organizationNamePath": "//*[local-name()='contact']/*[local-name()='CI_ResponsibleParty']/*[local-name()='organisationName'] | //*[local-name()='ptcontac']/*[local-name()='cntinfo']//*[local-name()='cntorg'] | //*[local-name()='pointOfContact']/*[local-name()='CI_ResponsibleParty']/*[local-name()='organisationName']"
 				},
 				"drilldown": {
 					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=producer_profile"
 				}
-			
-			},
+		
+		},
 			
 			"producerComments": {
-				"availabilityPath": "//gmd:identificationInfo//gmd:supplementalInformation",
+				"availabilityPath": "//*[local-name()='identificationInfo']//*[local-name()='supplementalInformation']",
 				"hoverover": {
 					"template": "",
-					"producerCommentsPath": "//gmd:identificationInfo//gmd:supplementalInformation",
+					"supplementalInformation": "//*[local-name()='identificationInfo']//*[local-name()='supplementalInformation']",
 					"knownProblemsPath": ""
 				},
 				"drilldown": {
-					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=producer_profile"
+					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=producer_comments"
 				}
 			},
 			
 			"lineage": {
-				"availabilityPath": "//*:LI_Lineage | //*:lineage",
+				"availabilityPath": "//*[local-name()='LI_Lineage'] | //*[local-name()='lineage']",
 				"hoverover": {
 					"template": "",
-					"processStepCountPath": "count(//*:LI_Lineage//*:processStep | //*:lineage//*:processStep)"
+					"processStepCountPath": "count(//*[local-name()='LI_Lineage']//*[local-name()='processStep'] | //*[local-name()='lineage']//*[local-name()='processStep'] | //*[local-name()='LI_Lineage']//*[local-name()='LE_ProcessStep'])"
 				},
 				"drilldown": {
-					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=producer_profile"
+					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=lineage"
 				}
 			},
 			
 			"standardsCompliance": {
-				"availabilityPath": "//*:metadataStandardName | //*:metstdv",
+				"availabilityPath": "//*[local-name()='metadataStandardName'] | //*[local-name()='metstdv']",
 				"hoverover": {
 					"template": "",
-					"standardPath": "normalize-space(string-join( (//*:metadataStandardName/normalize-space(), //*:metstdv/normalize-space(), //*:metadataStandardVersion/normalize-space()), ', '))"
+					"standardNamePath": "//*[local-name()='metadataStandardName'] | //*[local-name()='metstdv']",
+					"standardVersion": "//*[local-name()='metadataStandardVersion']"
 				},
 				"drilldown": {
-					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=producer_profile"
+					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=standards_complaince"
 				}
 			},
 			
 			"qualityInformation": {
-				"availabilityPath": "//gmd:dataQualityInfo",
+				"availabilityPath": "//*[local-name()='dataQualityInfo']",
 				"hoverover": {
 					"template": "",
 					"scopeLevelPath": "//gmd:dataQualityInfo//gmd:scope//gmd:MD_ScopeCode/@codeListValue"
 				},
 				"drilldown": {
-					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=producer_profile"
+					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=quality_information"
 				}
 			},
 
 			"citations": {
-				"availabilityPath": "//*:LI_Lineage/*:processStep//*:sourceCitation/*:CI_Citation",
+				"availabilityPath": "//*[local-name()='LI_Lineage']/*[local-name()='processStep']//*[local-name()='sourceCitation']/*[local-name()='CI_Citation']",
 				"hoverover": {
 					"template": "",
 					"citationsCountPath": "count(//*:LI_Lineage/*:processStep//*:sourceCitation/*:CI_Citation)"
 				},
 				"drilldown": {
-					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=producer_profile"
+					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=citations"
 				}
 			}
 		}
