@@ -24,20 +24,9 @@ class XMLProcessor{
 	private $lineageXPath;
 	private $standardsXPath;
 	private $qualityXPath;
-	private $feedbackXPath = 
-						'//*[local-name()=\'item\']/*[local-name()=\'user\'][*[local-name()=\'expertiseLevel\'] < 4] | 
-						//*[local-name()=\'item\']/*[local-name()=\'user\'][not(*[local-name()=\'expertiseLevel\'][text()])] | 
-						//*[local-name()=\'item\'][not(*[local-name()=\'user\'][node()])]';
-	private $reviewXPath = 
-						'//*[local-name()=\'item\']/*[local-name()=\'user\'][*[local-name()=\'expertiseLevel\'] > 3]';
-	private $citationsXPath = 
-						'//*[local-name()=\'LI_Lineage\']/*[local-name()=\'processStep\']//*[local-name()=\'sourceCitation\']/*[local-name()=\'CI_Citation\'] | 
-						//*[local-name()=\'identificationInfo\']/*[local-name()=\'GVQ_DataIdentification\']/*[local-name()=\'referenceDoc\']/*[local-name()=\'GVQ_Publication\'] | 
-						//*[local-name()=\'identificationInfo\']/*[local-name()=\'MD_DataIdentification\']/*[local-name()=\'referenceDoc\']/*[local-name()=\'GVQ_Publication\'] | 
-						//*[local-name()=\'dataQualityInfo\']/*[local-name()=\'GVQ_DataQuality\']/*[local-name()=\'report\']//*[local-name()=\'referenceDoc\']/*[local-name()=\'GVQ_Publication\'] | 
-						//*[local-name()=\'discoveredIssue\']/*[local-name()=\'GVQ_DiscoveredIssue\']//*[local-name()=\'referenceDoc\']/*[local-name()=\'GVQ_Publication\'] | 
-						//*[local-name()=\'item\']/*[local-name()=\'citation\'] | 
-						//*[local-name()=\'item\']/*[local-name()=\'usage\']//*[local-name()=\'referenceDoc\']/*[local-name()=\'GVQ_Publication\']';
+	private $feedbackXPath;
+	private $reviewXPath;
+	private $citationsXPath;
 	
 	// ********************************************************   HOVER-OVER XPATHS   *********************************************************
 	// Producer Profile:
@@ -51,11 +40,7 @@ class XMLProcessor{
 	private $standardNameXPath;
 	private $standardVersionXPath;
 	// Quality Information:
-	private $scopeLevelXPath  = 
-						'//*[local-name()=\'dataQualityInfo\']/*[local-name()=\'GVQ_DataQuality\']/*[local-name()=\'scope\']
-						//*[local-name()=\'MD_ScopeCode\']/@codeListValue | 
-						//*[local-name()=\'dataQualityInfo\']//*[local-name()=\'scope\']
-						//*[local-name()=\'MD_ScopeCode\']/@codeListValue';
+	private $scopeLevelXPath;
 	// User Feedback:
 	private $feedbacksCountXPath = 
 						'//*[local-name()=\'item\']/*[local-name()=\'user\'][*[local-name()=\'expertiseLevel\'] < 4] | 
@@ -71,14 +56,9 @@ class XMLProcessor{
 	private $expertRatingsCountXPath = 
 						'//*[local-name()=\'item\']/*[local-name()=\'user\'][*[local-name()=\'expertiseLevel\'] > 3] /../*[local-name()=\'rating\']/*[local-name()=\'score\']';
 	// Citations Information:
-	private $citationsCountXPath = 
-						'//*[local-name()=\'LI_Lineage\']/*[local-name()=\'processStep\']//*[local-name()=\'sourceCitation\']/*[local-name()=\'CI_Citation\'] | 
-						//*[local-name()=\'identificationInfo\']/*[local-name()=\'GVQ_DataIdentification\']/*[local-name()=\'referenceDoc\']/*[local-name()=\'GVQ_Publication\'] | 
-						//*[local-name()=\'identificationInfo\']/*[local-name()=\'MD_DataIdentification\']/*[local-name()=\'referenceDoc\']/*[local-name()=\'GVQ_Publication\'] | 
-						//*[local-name()=\'dataQualityInfo\']/*[local-name()=\'GVQ_DataQuality\']/*[local-name()=\'report\']//*[local-name()=\'referenceDoc\']/*[local-name()=\'GVQ_Publication\'] | 
-						//*[local-name()=\'discoveredIssue\']/*[local-name()=\'GVQ_DiscoveredIssue\']//*[local-name()=\'referenceDoc\']/*[local-name()=\'GVQ_Publication\'] | 
-						//*[local-name()=\'item\']/*[local-name()=\'citation\'] | 
-						//*[local-name()=\'item\']/*[local-name()=\'usage\']//*[local-name()=\'referenceDoc\']/*[local-name()=\'GVQ_Publication\']';
+	private $gvqCitationsCountXPath;
+	private $restCitationsCountXPath;
+
 	
 	// Drilldown URLs for each GEO label facet
 	private $baseDrilldownURL = "";
@@ -114,16 +94,22 @@ class XMLProcessor{
 		// SET QUALITY XPATHS
 		$this->qualityXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["qualityInformation"]["availabilityPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["qualityInformation"]["availabilityPath"]);
 		
-		// SET FEEDBACK XPATHS
+		$this->scopeLevelXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["qualityInformation"]["hoverover"]["scopeLevelPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["qualityInformation"]["hoverover"]["scopeLevelPath"]);
 		
+		// SET FEEDBACK XPATHS
+		$this->feedbackXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["userFeedback"]["availabilityPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["userFeedback"]["availabilityPath"]);
 		
 		// SET REVIEWS XPATHS
+		$this->reviewXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["expertReview"]["availabilityPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["expertReview"]["availabilityPath"]);
 		
 		
 		// SET CITATIONS XPATHS
 		$this->citationsXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["citations"]["availabilityPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["citations"]["availabilityPath"]);
 		
-		//die(var_dump($this->qualityXPath));
+		$this->gvqCitationsCountXPath = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["citations"]["hoverover"]["citationsCountPath"];
+		$this->restCitationsCountXPath = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["citations"]["hoverover"]["citationsCountPath"];
+		
+		//die(var_dump($this->reviewXPath));
 	}
 	
 	private function joinXPaths($xPath_1, $xPath_2){
@@ -234,7 +220,7 @@ class XMLProcessor{
 			$expertAverageRating = round($expertAverageRating, 2);
 			$expertReviewText .= "Number of reviews: $expertReviewsCount. Average rating: $expertAverageRating ($expertRatingsCount ratings).";
 		}
-		$citationsCount = $this->countElements($xml, $this->citationsCountXPath);
+		$citationsCount = $this->evaluateXPath($xml, $this->gvqCitationsCountXPath) + $this->evaluateXPath($xml, $this->restCitationsCountXPath);
 		if(!empty($citationsCount)){
 			$citationsText .= "Number of citations: $citationsCount.";
 		}
@@ -277,7 +263,7 @@ class XMLProcessor{
 								'expertReviewsCount' => $this->countElements($xml, $this->expertReviewsCountXPath),
 								'expertRatingsCount' => $this->countElements($xml, $this->expertRatingsCountXPath),
 								'expertAverageRating' => $this->getAverageRating($xml, $this->expertRatingsCountXPath),
-								'citationsCount' => $this->countElements($xml, $this->citationsCountXPath),
+								'citationsCount' => $this->evaluateXPath($xml, $this->gvqCitationsCountXPath) + $this->evaluateXPath($xml, $this->restCitationsCountXPath),
 								);
 								
 		return $hoveroverArray;
@@ -331,7 +317,7 @@ class XMLProcessor{
 								),
 								'citations' => array(
 									'availability' => $this->getAvailabilityInteger($xml, $this->citationsXPath),
-									'citationsCount' => $this->countElements($xml, $this->citationsCountXPath),
+									'citationsCount' => $this->evaluateXPath($xml, $this->gvqCitationsCountXPath) + $this->evaluateXPath($xml, $this->restCitationsCountXPath),
 								)
 							);
 								

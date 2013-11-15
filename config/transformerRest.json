@@ -12,7 +12,7 @@
 			"producerProfile": {
 				"availabilityPath": "//*[local-name()='contact']/*[local-name()='CI_ResponsibleParty'] | //*[local-name()='ptcontac']/*[local-name()='cntinfo'] | //*[local-name()='pointOfContact']/*[local-name()='CI_ResponsibleParty']",
 				"hoverover": {
-					"template": "",
+					"template": "Producer Profile %sOrganisation name: %s.",
 					"organizationNamePath": "//*[local-name()='contact']/*[local-name()='CI_ResponsibleParty']/*[local-name()='organisationName'] | //*[local-name()='ptcontac']/*[local-name()='cntinfo']//*[local-name()='cntorg'] | //*[local-name()='pointOfContact']/*[local-name()='CI_ResponsibleParty']/*[local-name()='organisationName']"
 				},
 				"drilldown": {
@@ -60,7 +60,7 @@
 				"availabilityPath": "//*[local-name()='dataQualityInfo']",
 				"hoverover": {
 					"template": "",
-					"scopeLevelPath": "//gmd:dataQualityInfo//gmd:scope//gmd:MD_ScopeCode/@codeListValue"
+					"scopeLevelPath": "//*[local-name()='dataQualityInfo']//*[local-name()='scope']//*[local-name()='MD_ScopeCode']/@codeListValue"
 				},
 				"drilldown": {
 					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=quality_information"
@@ -71,7 +71,7 @@
 				"availabilityPath": "//*[local-name()='LI_Lineage']/*[local-name()='processStep']//*[local-name()='sourceCitation']/*[local-name()='CI_Citation']",
 				"hoverover": {
 					"template": "",
-					"citationsCountPath": "count(//*:LI_Lineage/*:processStep//*:sourceCitation/*:CI_Citation)"
+					"citationsCountPath": "count(//*[local-name()='LI_Lineage']/*[local-name()='processStep']//*[local-name()='sourceCitation']/*[local-name()='CI_Citation'])"
 				},
 				"drilldown": {
 					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=citations"

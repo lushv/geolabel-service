@@ -28,7 +28,7 @@
 				"availabilityPath": "//*[local-name()='dataQualityInfo']/*[local-name()='GVQ_DataQuality']",
 				"hoverover": {
 					"template": "",
-					"scopeLevelPath": "//gvq:dataQualityInfo/gvq:GVQ_DataQuality/gmd19157:scope//gmd:MD_ScopeCode/@codeListValue"
+					"scopeLevelPath": "//*[local-name()='dataQualityInfo']/*[local-name()='GVQ_DataQuality']/*[local-name()='scope']//*[local-name()='MD_ScopeCode']/@codeListValue"
 				},
 				"drilldown": {
 					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=quality_information"
@@ -36,9 +36,15 @@
 			},
 			
 			"userFeedback": {
-				"availabilityPath": "//gvq:item/gvq:user[gvq:expertiseLevel <= 3] | //gvq:item/gvq:user[not(gvq:expertiseLevel[text()])] | //gvq:item[not(gvq:user[node()])]",
+				"availabilityPath": "//*[local-name()='GVQ_FeedbackCollection']/*[local-name()='summary']/*[local-name()='feedbackItemsByExpertiseLevel']/*[local-name()='category'][*[local-name()='value'][text()='1' or text()='2' or text()='3']]",
+				
 				"hoverover": {
 					"template": "",
+					"feedbackFull": {
+						"feedbacksCountPath": "count(//gvq:item/gvq:user[gvq:expertiseLevel < 4] | //gvq:item/gvq:user[not(gvq:expertiseLevel[text()])] | //gvq:item[not(gvq:user[node()])])",
+						"ratingsCountPath": "count(//gvq:item/gvq:user[gvq:expertiseLevel < 4]/../gvq:rating/gvq:score | //gvq:item/gvq:user[not(gvq:expertiseLevel[text()])]/../gvq:rating/gvq:score | //gvq:item[not(gvq:user[node()])]/gvq:rating/gvq:score)",
+						"averageRatingPath": "avg(//gvq:item/gvq:user[gvq:expertiseLevel < 4]/../gvq:rating/gvq:score | //gvq:item/gvq:user[not(gvq:expertiseLevel[text()])]/../gvq:rating/gvq:score | //gvq:item[not(gvq:user[node()])]/gvq:rating/gvq:score)"
+					},
 					"feedbackSummary": {
 						"feedbacksCountPath": "count(//gvq:item/gvq:user[gvq:expertiseLevel < 4] | //gvq:item/gvq:user[not(gvq:expertiseLevel[text()])] | //gvq:item[not(gvq:user[node()])])",
 						"ratingsCountPath": "count(//gvq:item/gvq:user[gvq:expertiseLevel < 4]/../gvq:rating/gvq:score | //gvq:item/gvq:user[not(gvq:expertiseLevel[text()])]/../gvq:rating/gvq:score | //gvq:item[not(gvq:user[node()])]/gvq:rating/gvq:score)",
@@ -51,10 +57,15 @@
 			},
 			
 			"expertReview": {
-				"availabilityPath": "//gvq:item/gvq:user[gvq:expertiseLevel > 3]",
+				"availabilityPath": "//*[local-name()='GVQ_FeedbackCollection']/*[local-name()='summary']/*[local-name()='feedbackItemsByExpertiseLevel']/*[local-name()='category'][*[local-name()='value'][text()='2' or text()='5']",
 				"hoverover": {
 					"template": "",
-					"feedbackSummary": {
+					"reviewFull": {
+						"feedbacksCountPath": "count(//gvq:item/gvq:user[gvq:expertiseLevel < 4] | //gvq:item/gvq:user[not(gvq:expertiseLevel[text()])] | //gvq:item[not(gvq:user[node()])])",
+						"ratingsCountPath": "count(//gvq:item/gvq:user[gvq:expertiseLevel < 4]/../gvq:rating/gvq:score | //gvq:item/gvq:user[not(gvq:expertiseLevel[text()])]/../gvq:rating/gvq:score | //gvq:item[not(gvq:user[node()])]/gvq:rating/gvq:score)",
+						"averageRatingPath": "avg(//gvq:item/gvq:user[gvq:expertiseLevel < 4]/../gvq:rating/gvq:score | //gvq:item/gvq:user[not(gvq:expertiseLevel[text()])]/../gvq:rating/gvq:score | //gvq:item[not(gvq:user[node()])]/gvq:rating/gvq:score)"
+					},
+					"reviewSummary": {
 						"feedbacksCountPath": "count(//gvq:item/gvq:user[gvq:expertiseLevel > 3])",
 						"ratingsCountPath": "count(//gvq:item/gvq:user[gvq:expertiseLevel > 3]/../gvq:rating/gvq:score)",
 						"averageRatingPath": "avg(//gvq:item/gvq:user[gvq:expertiseLevel > 3]/../gvq:rating/gvq:score)"
@@ -69,7 +80,7 @@
 				"availabilityPath": "//*[local-name()='identificationInfo']/*[local-name()='GVQ_DataIdentification']/*[local-name()='referenceDoc']/*[local-name()='GVQ_Publication'] | //*[local-name()='identificationInfo']/*[local-name()='MD_DataIdentification']/*[local-name()='referenceDoc']/*[local-name()='GVQ_Publication'] | //*[local-name()='dataQualityInfo']/*[local-name()='GVQ_DataQuality']/*[local-name()='report']//*[local-name()='referenceDoc']/*[local-name()='GVQ_Publication'] | //*[local-name()='discoveredIssue']/*[local-name()='GVQ_DiscoveredIssue']//*[local-name()='referenceDoc']/*[local-name()='GVQ_Publication'] | //*[local-name()='item']/*[local-name()='citation'] | //*[local-name()='item']/*[local-name()='usage']//*[local-name()='referenceDoc']/*[local-name()='GVQ_Publication']",
 				"hoverover": {
 					"template": "",
-					"citationsCountPath": "count(//gmd:identificationInfo/gvq:GVQ_DataIdentification/*:referenceDoc/gvq:GVQ_Publication | //gvq:dataQualityInfo/gvq:GVQ_DataQuality/*:report//*:referenceDoc/gvq:GVQ_Publication | //*:discoveredIssue/gvq:GVQ_DiscoveredIssue//*:referenceDoc/gvq:GVQ_Publication | //gvq:item/*:citation  | //gvq:item/gvq:usage//*:referenceDoc/gvq:GVQ_Publication)"
+					"citationsCountPath": "count(//*[local-name()='identificationInfo']/*[local-name()='GVQ_DataIdentification']/*[local-name()='referenceDoc']/*[local-name()='GVQ_Publication'] | //*[local-name()='identificationInfo']/*[local-name()='MD_DataIdentification']/*[local-name()='referenceDoc']/*[local-name()='GVQ_Publication'] | //*[local-name()='dataQualityInfo']/*[local-name()='GVQ_DataQuality']/*[local-name()='report']//*[local-name()='referenceDoc']/*[local-name()='GVQ_Publication'] | //*[local-name()='discoveredIssue']/*[local-name()='GVQ_DiscoveredIssue']//*[local-name()='referenceDoc']/*[local-name()='GVQ_Publication'] | //*[local-name()='item']/*[local-name()='citation'] | //*[local-name()='item']/*[local-name()='usage']//*[local-name()='referenceDoc']/*[local-name()='GVQ_Publication'])"
 				},
 				"drilldown": {
 					"url": "http://www.geolabel.net/api/v1/drilldown?metadata=%s&facet=citations"
