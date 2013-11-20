@@ -1,7 +1,7 @@
 <?php
 /**
 * XMLProcessor class provides functionality for processing producer, feedback or aggregated XML documents.
-* This class stores all the GEO label related XPath expressions.
+* This class loads and stores all the GEO label related XPath expressions.
 *
 * PHP version 5
 *
@@ -18,46 +18,81 @@ class XMLProcessor{
 	// XPath expressions for dataset IDs:
 	private $fileIdentifierXPath = '//*[local-name()=\'fileIdentifier\']/*[local-name()=\'CharacterString\']';
 
-	// XPath expressions for each GEO label informational aspect - availability XPaths:						
-	private $producerProfileXpath;
-	private $producerCommentsXPath;
-	private $lineageXPath;
-	private $standardsXPath;
-	private $qualityXPath;
-	private $feedbackXPath;
-	private $reviewXPath;
-	private $citationsXPath;
+	// ***********************************************   AVAILABILITY XPATHS   **************************************************
+	private $producer_profile_xpath_rest;
+	private $producer_profile_xpath_gvq;
+
+	private $producer_comments_xpath_rest;
+	private $producer_comments_xpath_gvq;
 	
-	// ********************************************************   HOVER-OVER XPATHS   *********************************************************
-	// Producer Profile:
-	private $organisationNameXPath;
-	// Producer Comments:
-	private $supplementalInformationXPath;
-	private $knownProblemsXPath;
-	// Lineage Information:
-	private $processStepCountXPath;
-	// Standards Complaince:
-	private $standardNameXPath;
-	private $standardVersionXPath;
-	// Quality Information:
-	private $scopeLevelXPath;
-	// User Feedback:
-	private $feedbacksCountXPath = 
-						'//*[local-name()=\'item\']/*[local-name()=\'user\'][*[local-name()=\'expertiseLevel\'] < 4] | 
-						//*[local-name()=\'item\']/*[local-name()=\'user\'][not(*[local-name()=\'expertiseLevel\'][text()])] | 
-						//*[local-name()=\'item\'][not(*[local-name()=\'user\'][node()])]';
-	private $ratingsCountXPath = 
-						'//*[local-name()=\'item\']/*[local-name()=\'user\'][*[local-name()=\'expertiseLevel\'] < 4]/../*[local-name()=\'rating\']/*[local-name()=\'score\'] | 
-						//*[local-name()=\'item\']/*[local-name()=\'user\'][not(*[local-name()=\'expertiseLevel\'][text()])]/../*[local-name()=\'rating\']/*[local-name()=\'score\'] | 
-						//*[local-name()=\'item\'][not(*[local-name()=\'user\'][node()])]/*[local-name()=\'rating\']/*[local-name()=\'score\']';
-	// Expert Review:
-	private $expertReviewsCountXPath = 
-						'//*[local-name()=\'item\']/*[local-name()=\'user\'][*[local-name()=\'expertiseLevel\'] > 3]';
-	private $expertRatingsCountXPath = 
-						'//*[local-name()=\'item\']/*[local-name()=\'user\'][*[local-name()=\'expertiseLevel\'] > 3] /../*[local-name()=\'rating\']/*[local-name()=\'score\']';
-	// Citations Information:
-	private $gvqCitationsCountXPath;
-	private $restCitationsCountXPath;
+	private $lineage_xpath_rest;
+	private $lineage_xpath_gvq;
+	
+	private $standards_xpath_rest;
+	private $standards_xpath_gvq;
+
+	private $quality_xpath_rest;
+	private $quality_xpath_gvq;
+	
+	private $feedback_xpath_rest;
+	private $feedback_xpath_gvq;
+	
+	private $review_xpath_rest;
+	private $review_xpath_gvq;
+
+	private $citations_xpath_rest;
+	private $citations_xpath_gvq;
+	
+	// ***********************************************   HOVER-OVER XPATHS   **************************************************
+	private $organisation_name_xpath_rest;
+	private $organisation_name_xpath_gvq;
+
+	private $supplemental_information_xpath_rest;
+	private $supplemental_information_xpath_gvq;
+	private $known_problems_xpath_rest;
+	private $known_problems_xpath_gvq;
+	
+	private $process_step_count_xpath_rest;
+	private $process_step_count_xpath_gvq;
+	
+	private $standard_name_xpath_rest;
+	private $standard_name_xpath_gvq;
+	
+	private $standard_version_xpath_rest;
+	private $standard_version_xpath_gvq;
+	
+	private $scope_level_xpath_rest;
+	private $scope_level_xpath_gvq;
+	
+	private $feedbacks_count_xpath_rest;
+	private $feedbacks_count_xpath_gvq;
+	private $ratings_count_xpath_rest;
+	private $ratings_count_xpath_gvq;
+	
+	private $average_rating_level_1_xpath_rest;
+	private $average_rating_level_1_xpath_gvq;
+	
+	private $average_rating_level_2_xpath_rest;
+	private $average_rating_level_2_xpath_gvq;
+	
+	private $average_rating_level_3_xpath_rest;
+	private $average_rating_level_3_xpath_gvq;
+	
+	private $reviews_count_xpath_rest;
+	private $reviews_count_xpath_gvq;
+	private $reviews_ratings_count_xpath_rest;
+	private $reviews_ratings_count_xpath_gvq;
+	
+	private $reviews_average_level_4_rating_xpath_rest;
+	private $reviews_average_level_4_rating_xpath_gvq;
+	
+	private $reviews_average_level_5_rating_xpath_rest;
+	private $reviews_average_level_5_rating_xpath_gvq;
+
+	private $citations_count_xpath_rest;
+	private $citations_count_xpath_gvq;
+
+	// ***********************************************   HOVER-OVER TEMPLATES   **************************************************
 
 	
 	// Drilldown URLs for each GEO label facet
@@ -68,82 +103,113 @@ class XMLProcessor{
 	public function __construct($app){
 		
 		// SET PRODUCER PROFILE XPATHS
-		$this->producerProfileXpath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["producerProfile"]["availabilityPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["producerProfile"]["availabilityPath"]);
+		$this->producer_profile_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["producerProfile"]["availabilityPath"];
 		
-		$this->organisationNameXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["producerProfile"]["hoverover"]["organizationNamePath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["producerProfile"]["hoverover"]["organizationNamePath"]);
+		$this->producer_profile_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["producerProfile"]["availabilityPath"];
+
+		$this->organisation_name_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["producerProfile"]["hoverover"]["organizationNamePath"];
+		$this->organisation_name_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["producerProfile"]["hoverover"]["organizationNamePath"];
 		
 		// SET PRODUCER COMMENTS XPATHS
-		$this->producerCommentsXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["producerComments"]["availabilityPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["producerComments"]["availabilityPath"]);
+		$this->producer_comments_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["producerComments"]["availabilityPath"];
+		$this->producer_comments_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["producerComments"]["availabilityPath"];
 		
-		$this->supplementalInformationXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["producerComments"]["hoverover"]["supplementalInformation"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["producerComments"]["hoverover"]["supplementalInformation"]);
+		$this->supplemental_information_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["producerComments"]["hoverover"]["supplementalInformation"];
+		$this->supplemental_information_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["producerComments"]["hoverover"]["supplementalInformation"];
 		
-		$this->knownProblemsXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["producerComments"]["hoverover"]["knownProblemsPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["producerComments"]["hoverover"]["knownProblemsPath"]);
+		$this->known_problems_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["producerComments"]["hoverover"]["knownProblemsPath"];
+		$this->known_problems_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["producerComments"]["hoverover"]["knownProblemsPath"];
 
 		// SET LINEAGE XPATHS
-		$this->lineageXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["lineage"]["availabilityPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["lineage"]["availabilityPath"]);
+		$this->lineage_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["lineage"]["availabilityPath"];
+		$lineage_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["lineage"]["availabilityPath"];
 		
-		$this->processStepCountXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["lineage"]["hoverover"]["processStepCountPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["lineage"]["hoverover"]["processStepCountPath"]);
+		$this->process_step_count_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["lineage"]["hoverover"]["processStepCountPath"];
+		$this->process_step_count_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["lineage"]["hoverover"]["processStepCountPath"];
 		
 		// SET STANDARDS XPATHS
-		$this->standardsXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["standardsCompliance"]["availabilityPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["standardsCompliance"]["availabilityPath"]);
+		$this->standards_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["standardsCompliance"]["availabilityPath"];
+		$this->standards_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["standardsCompliance"]["availabilityPath"];
 		
-		$this->standardNameXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["standardsCompliance"]["hoverover"]["standardNamePath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["standardsCompliance"]["hoverover"]["standardNamePath"]);
+		$this->standard_name_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["standardsCompliance"]["hoverover"]["standardNamePath"];
+		$this->standard_name_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["standardsCompliance"]["hoverover"]["standardNamePath"];
 		
-		$this->standardVersionXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["standardsCompliance"]["hoverover"]["standardVersion"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["standardsCompliance"]["hoverover"]["standardVersion"]);
+		$this->standard_version_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["standardsCompliance"]["hoverover"]["standardVersion"];
+		$this->standard_version_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["standardsCompliance"]["hoverover"]["standardVersion"];
 		
 		// SET QUALITY XPATHS
-		$this->qualityXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["qualityInformation"]["availabilityPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["qualityInformation"]["availabilityPath"]);
+		$this->quality_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["qualityInformation"]["availabilityPath"];
+		$this->quality_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["qualityInformation"]["availabilityPath"];
 		
-		$this->scopeLevelXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["qualityInformation"]["hoverover"]["scopeLevelPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["qualityInformation"]["hoverover"]["scopeLevelPath"]);
+		$this->scope_level_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["qualityInformation"]["hoverover"]["scopeLevelPath"];
+		$this->scope_level_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["qualityInformation"]["hoverover"]["scopeLevelPath"];
 		
 		// SET FEEDBACK XPATHS
-		$this->feedbackXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["userFeedback"]["availabilityPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["userFeedback"]["availabilityPath"]);
+		$this->feedback_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["userFeedback"]["availabilityPath"];
+		$this->feedback_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["userFeedback"]["availabilityPath"];
 		
+		$this->feedbacks_count_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["userFeedback"]["hoverover"]["feedbacksCountPath"];
+		$this->feedbacks_count_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["userFeedback"]["hoverover"]["feedbacksCountPath"];
+		
+		$this->ratings_count_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["userFeedback"]["hoverover"]["ratingsCountPath"];
+		$this->ratings_count_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["userFeedback"]["hoverover"]["ratingsCountPath"];
+		
+		$this->average_rating_level_1_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["userFeedback"]["hoverover"]["averageRating"]["level1RawTotalPath"];
+		$this->average_rating_level_1_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["userFeedback"]["hoverover"]["averageRating"]["level1RawTotalPath"];
+		
+		$this->average_rating_level_2_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["userFeedback"]["hoverover"]["averageRating"]["level2RawTotalPath"];
+		$this->average_rating_level_2_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["userFeedback"]["hoverover"]["averageRating"]["level2RawTotalPath"];
+		
+		$this->average_rating_level_3_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["userFeedback"]["hoverover"]["averageRating"]["level3RawTotalPath"];
+		$this->average_rating_level_3_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["userFeedback"]["hoverover"]["averageRating"]["level3RawTotalPath"];
+
 		// SET REVIEWS XPATHS
-		$this->reviewXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["expertReview"]["availabilityPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["expertReview"]["availabilityPath"]);
+		$this->review_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["expertReview"]["availabilityPath"];
+		$this->review_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["expertReview"]["availabilityPath"];
 		
+		$this->reviews_count_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["expertReview"]["hoverover"]["reviewsCountPath"];
+		$this->reviews_count_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["expertReview"]["hoverover"]["reviewsCountPath"];
+		
+		$this->reviews_ratings_count_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["expertReview"]["hoverover"]["ratingsCountPath"];
+		$this->reviews_ratings_count_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["expertReview"]["hoverover"]["ratingsCountPath"];
+		
+		$this->reviews_average_level_4_rating_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["expertReview"]["hoverover"]["averageRating"]["level4RawTotalPath"];
+		$this->reviews_average_level_4_rating_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["expertReview"]["hoverover"]["averageRating"]["level4RawTotalPath"];
+		
+		$this->reviews_average_level_5_rating_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["expertReview"]["hoverover"]["averageRating"]["level5RawTotalPath"];
+		$this->reviews_average_level_5_rating_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["expertReview"]["hoverover"]["averageRating"]["level5RawTotalPath"];
 		
 		// SET CITATIONS XPATHS
-		$this->citationsXPath = $this->joinXPaths($app["transformerRest"]["transformationDescription"]["facetDescriptions"]["citations"]["availabilityPath"], $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["citations"]["availabilityPath"]);
+		$this->citations_xpath_rest = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["citations"]["availabilityPath"];
+		$this->citations_xpath_gvq = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["citations"]["availabilityPath"];
 		
-		$this->gvqCitationsCountXPath = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["citations"]["hoverover"]["citationsCountPath"];
-		$this->restCitationsCountXPath = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["citations"]["hoverover"]["citationsCountPath"];
-		
-		//die(var_dump($this->reviewXPath));
-	}
-	
-	private function joinXPaths($xPath_1, $xPath_2){
-		$xPathsArray = array();
-		array_push($xPathsArray, $xPath_1);
-		array_push($xPathsArray, $xPath_2);
-		$xPathsArray = array_filter($xPathsArray);
-		$xPath = implode(" | ", $xPathsArray);
-		return $xPath;
+		$this->citations_count_xpath_rest = $app["transformerGVQ"]["transformationDescription"]["facetDescriptions"]["citations"]["hoverover"]["citationsCountPath"];
+		$this->citations_count_xpath_gvq = $app["transformerRest"]["transformationDescription"]["facetDescriptions"]["citations"]["hoverover"]["citationsCountPath"];
 	}
 
 	/* Function getAvailabilityEncodings
 	 * Generates an array populated with GEO label facets' availability encodings
 	 * 
 	 * @param $xml DomDocument an XML document to process
-	 * @return array of integers where key is a GEO label facet name and value is integer availability encoding,
-	 * or null if $xml is empty
+	 * @return array of integers where key is a GEO label facet name and value is an integer availability encoding,
+	 * or returns null if supplied xml is empty
 	 */
 	public function getAvailabilityEncodings($xml){
 		if(empty($xml)){
 			return null;
 		}
-				
+	
 		$availabilityArray = array(
-								'producerProfile' => $this->getAvailabilityInteger($xml, $this->producerProfileXpath),
-								'lineage' => $this->getAvailabilityInteger($xml, $this->lineageXPath),
-								'producerComments' => $this->getAvailabilityInteger($xml, $this->producerCommentsXPath),
-								'standardsComplaince' => $this->getAvailabilityInteger($xml, $this->standardsXPath),
-								'qualityInformation' => $this->getAvailabilityInteger($xml, $this->qualityXPath),
-								'userFeedback' => $this->getAvailabilityInteger($xml, $this->feedbackXPath),
-								'expertReview' => $this->getAvailabilityInteger($xml, $this->reviewXPath),
-								'citations' => $this->getAvailabilityInteger($xml, $this->citationsXPath),
-								);
-								
+							'producerProfile' => $this->evaluateAvailability($xml, $this->producer_profile_xpath_rest, $this->producer_profile_xpath_gvq),
+							'producerComments' => $this->evaluateAvailability($xml, $this->producer_comments_xpath_rest, $this->producer_comments_xpath_gvq),
+							'lineage' => $this->evaluateAvailability($xml, $this->lineage_xpath_rest, $this->lineage_xpath_gvq),
+							'standardsComplaince' => $this->evaluateAvailability($xml, $this->standards_xpath_rest, $this->standards_xpath_gvq),
+							'qualityInformation' => $this->evaluateAvailability($xml, $this->quality_xpath_rest, $this->quality_xpath_gvq),
+							'userFeedback' => $this->evaluateAvailability($xml, $this->feedback_xpath_rest, $this->feedback_xpath_gvq),
+							'expertReview' => $this->evaluateAvailability($xml, $this->review_xpath_rest, $this->review_xpath_gvq),
+							'citations' => $this->evaluateAvailability($xml, $this->citations_xpath_rest, $this->citations_xpath_gvq),
+							);
+
 		return $availabilityArray;
 	}
 	
@@ -158,73 +224,54 @@ class XMLProcessor{
 		if(empty($xml)){
 			return null;
 		}
+
 		$producerProfileText = 'Producer Profile' . PHP_EOL;
-		$lineageText = 'Lineage Information' . PHP_EOL;
 		$producerCommentsText = 'Producer Comments' . PHP_EOL;
+		$lineageText = 'Lineage Information' . PHP_EOL;
 		$standardsComplainceText = 'Standards Compliance' . PHP_EOL;
 		$qualityInformationText = 'Quality Information' . PHP_EOL;
 		$userFeedbackText = 'User Feedback' . PHP_EOL;
 		$expertReviewText = 'Expert Review' . PHP_EOL;
 		$citationsText = 'Citations Information' . PHP_EOL;
+
+		$organisationName = $this->evaluateXPaths($xml, $this->organisation_name_xpath_rest, $this->organisation_name_xpath_gvq);
+		$producerProfileText .= "Organisation name: $organisationName.";
 		
-		$organisationName =$this->getFirstNode($xml, $this->organisationNameXPath);
-		if(!empty($organisationName)){
-			$producerProfileText .= 'Organisation name: '.$organisationName.'.';
-		}
-		$supplementalInformation = $this->getFirstNode($xml, $this->supplementalInformationXPath);
-		if(!empty($supplementalInformation)){
-			if(strlen($supplementalInformation) > 350){
-				$supplementalInformation = substr($supplementalInformation, 0, 350).'...';
-			}
-			$producerCommentsText .= 'Supplemental Information: ' . $supplementalInformation . PHP_EOL;
-		}
-		$knownProblems = $this->getFirstNode($xml, $this->knownProblemsXPath);
-		if(!empty($knownProblems)){
-			if(strlen($knownProblems) > 350){
-				$knownProblems = substr($knownProblems, 0, 350).'...';
-			}
-			$producerCommentsText .= 'Known Problems: ' . $knownProblems;
-		}
-		$lineageAvailability = $this->getAvailabilityInteger($xml, $this->lineageXPath);
-		$processStepCount = $this->evaluateXPath($xml, $this->processStepCountXPath);
+		$supplementalInformation = $this->evaluateXPaths($xml, $this->supplemental_information_xpath_rest, $this->supplemental_information_xpath_gvq);
+		$producerCommentsText .= "Supplemental Information: $supplementalInformation" . PHP_EOL;
+		
+		$knownProblems = $this->evaluateXPaths($xml, $this->known_problems_xpath_rest, $this->known_problems_xpath_gvq);
+		$producerCommentsText .= "Known Problems: $knownProblems";
+
+		$lineageAvailability = $this->evaluateAvailability($xml, $this->lineage_xpath_rest, $this->lineage_xpath_gvq);
 		if(!empty($lineageAvailability)){
-			$lineageText .= 'Number of process steps: '.$processStepCount.'.';
+			$processStepCount = $this->evaluateXPaths($xml, $this->process_step_count_xpath_rest, $this->process_step_count_xpath_gvq);
+			$lineageText .= "Number of process steps: $processStepCount.";
 		}
-		$standardName = $this->getFirstNode($xml, $this->standardNameXPath);
-		$standardVersion = $this->getFirstNode($xml, $this->standardVersionXPath);
-		if(!empty($standardName)){
-			$standardsComplainceText .= "Standard name: $standardName";
-			if(!empty($standardVersion)){
-				$standardsComplainceText .= ", version $standardVersion.";
-			}
-			else{
-				$standardsComplainceText .= ".";
-			}
+		
+		$standardName = $this->evaluateXPaths($xml, $this->standard_name_xpath_rest, $this->standard_name_xpath_gvq);
+		$standardVersion = $this->evaluateXPaths($xml, $this->standard_version_xpath_rest, $this->standard_version_xpath_gvq);
+		$standardsComplainceText .= "Standard name: $standardName, version $standardVersion.";
+		
+		$qualityAvailability = $this->evaluateAvailability($xml, $this->quality_xpath_rest, $this->quality_xpath_gvq);
+		if(!empty($qualityAvailability)){
+			$scopeLevel = $this->evaluateXPaths($xml, $this->scope_level_xpath_rest, $this->scope_level_xpath_gvq);
+			$qualityInformationText .= "Quality information scope: $scopeLevel.";
 		}
-		$qualityAvailability = $this->getAvailabilityInteger($xml, $this->qualityXPath);
-		$scopeLevel = $this->getFirstNode($xml, $this->scopeLevelXPath);
-		if(!empty($scopeLevel) && !empty($qualityAvailability)){
-			$qualityInformationText .= "Available at a $scopeLevel level.";
-		}
-		$feedbacksCount = $this->countElements($xml, $this->feedbacksCountXPath);
-		if(!empty($feedbacksCount)){
-			$ratingsCount = $this->countElements($xml, $this->ratingsCountXPath);
-			$feedbacksAverageRating = $this->getAverageRating($xml, $this->ratingsCountXPath);
-			$feedbacksAverageRating = round($feedbacksAverageRating, 2);
-			$userFeedbackText .= "Number of feedbacks $feedbacksCount. Average rating: $feedbacksAverageRating ($ratingsCount ratings).";
-		}
-		$expertReviewsCount = $this->countElements($xml, $this->expertReviewsCountXPath);
-		if(!empty($expertReviewsCount)){
-			$expertRatingsCount = $this->countElements($xml, $this->expertRatingsCountXPath);
-			$expertAverageRating = $this->getAverageRating($xml, $this->expertRatingsCountXPath);
-			$expertAverageRating = round($expertAverageRating, 2);
-			$expertReviewText .= "Number of reviews: $expertReviewsCount. Average rating: $expertAverageRating ($expertRatingsCount ratings).";
-		}
-		$citationsCount = $this->evaluateXPath($xml, $this->gvqCitationsCountXPath) + $this->evaluateXPath($xml, $this->restCitationsCountXPath);
-		if(!empty($citationsCount)){
-			$citationsText .= "Number of citations: $citationsCount.";
-		}
-					
+		
+		$feedbacksCount = $this->evaluateXPaths($xml, $this->feedbacks_count_xpath_rest, $this->feedbacks_count_xpath_gvq);
+		$ratingsCount = $this->evaluateXPaths($xml, $this->ratings_count_xpath_rest, $this->ratings_count_xpath_gvq);
+		$feedbacksAverageRating = $this->getAverageRating($xml, $this->ratings_count_xpath_gvq, $this->average_rating_level_1_xpath_gvq, $this->average_rating_level_2_xpath_gvq, $this->average_rating_level_3_xpath_gvq);
+		$userFeedbackText .= "Number of feedbacks: $feedbacksCount. Average rating: $feedbacksAverageRating ($ratingsCount rating(s)).";
+		
+		$expertReviewsCount = $this->evaluateXPaths($xml, $this->reviews_count_xpath_rest, $this->reviews_count_xpath_gvq);
+		$expertRatingsCount = $this->evaluateXPaths($xml, $this->reviews_ratings_count_xpath_rest, $this->reviews_ratings_count_xpath_gvq);
+		$expertAverageRating = $this->getAverageRating($xml, $this->reviews_ratings_count_xpath_gvq, $this->reviews_average_level_4_rating_xpath_gvq, $this->reviews_average_level_5_rating_xpath_gvq, null);
+		$expertReviewText .= "Number of reviews: $expertReviewsCount. Average rating: $expertAverageRating ($expertRatingsCount ratings).";
+		
+		$citationsCount = $this->evaluateXPaths($xml, $this->citations_count_xpath_rest, $this->citations_count_xpath_gvq);
+		$citationsText .= "Number of citations: $citationsCount.";
+		
 		$hoveroverArray = array(
 								'producerProfile' => $producerProfileText,
 								'lineage' => $lineageText,
@@ -234,36 +281,6 @@ class XMLProcessor{
 								'userFeedback' => $userFeedbackText,
 								'expertReview' => $expertReviewText,
 								'citations' => $citationsText,
-								);
-								
-		return $hoveroverArray;
-	}
-	
-	/* Function getLmlHoveroverText
-	 * Generates an array populated with hover-over text for each GEO label facet
-	 * 
-	 * @param $xml DomDocument an XML document to process
-	 * @return array an array populated with hover-over text for each GEO label facet,
-	 * or null if $xml is empty
-	 */
-	public function getLmlHoveroverText($xml){
-		if(empty($xml)){
-			return null;
-		}
-		$hoveroverArray = array(
-								'organisationName' => $this->getFirstNode($xml, $this->organisationNameXPath),
-								'processStepCount' => $this->countElements($xml, $this->processStepCountXPath),
-								'supplementalInformation' => $this->getFirstNode($xml, $this->supplementalInformationXPath),
-								'standardName' => $this->getFirstNode($xml, $this->standardNameXPath),
-								'standardVersion' => $this->getFirstNode($xml, $this->standardVersionXPath),
-								'scopeLevel' => $this->getFirstNode($xml, $this->scopeLevelXPath),
-								'feedbacksCount' => $this->countElements($xml, $this->feedbacksCountXPath),
-								'ratingsCount' => $this->countElements($xml, $this->ratingsCountXPath),
-								'feedbacksAverageRating' => $this->getAverageRating($xml, $this->ratingsCountXPath),
-								'expertReviewsCount' => $this->countElements($xml, $this->expertReviewsCountXPath),
-								'expertRatingsCount' => $this->countElements($xml, $this->expertRatingsCountXPath),
-								'expertAverageRating' => $this->getAverageRating($xml, $this->expertRatingsCountXPath),
-								'citationsCount' => $this->evaluateXPath($xml, $this->gvqCitationsCountXPath) + $this->evaluateXPath($xml, $this->restCitationsCountXPath),
 								);
 								
 		return $hoveroverArray;
@@ -280,71 +297,105 @@ class XMLProcessor{
 		if(empty($xml)){
 			return null;
 		}
+
 		$summaryArray = array(  
-								'producerProfile' => array(
-									'availability' => $this->getAvailabilityInteger($xml, $this->producerProfileXpath),
-									'organisationName' => $this->getFirstNode($xml, $this->organisationNameXPath),
-								),
-								'producerComments' => array(
-									'availability' => $this->getAvailabilityInteger($xml, $this->producerCommentsXPath),
-									'supplementalInformation' => $this->getFirstNode($xml, $this->supplementalInformationXPath),
-									'supplementalInformationType' => "",
-								),
-								'lineage' => array(
-									'availability' => $this->getAvailabilityInteger($xml, $this->lineageXPath),
-									'processStepCount' => $this->countElements($xml, $this->processStepCountXPath),
-								),
-								'standardsComplaince' => array(
-									'availability' => $this->getAvailabilityInteger($xml, $this->standardsXPath),
-									'standardName' => $this->getFirstNode($xml, $this->standardNameXPath),
-									'standardVersion' => $this->getFirstNode($xml, $this->standardVersionXPath),
-								),
-								'qualityInformation' => array(
-									'availability' => $this->getAvailabilityInteger($xml, $this->qualityXPath),
-									'scopeLevel' => $this->getFirstNode($xml, $this->scopeLevelXPath),
-								),
-								'userFeedback' => array(
-									'availability' => $this->getAvailabilityInteger($xml, $this->feedbackXPath),
-									'feedbacksCount' => $this->countElements($xml, $this->feedbacksCountXPath),
-									'ratingsCount' => $this->countElements($xml, $this->ratingsCountXPath),
-									'feedbacksAverageRating' => $this->getAverageRating($xml, $this->ratingsCountXPath),
-								),
-								'expertReview' => array(
-									'availability' => $this->getAvailabilityInteger($xml, $this->reviewXPath),
-									'expertReviewsCount' => $this->countElements($xml, $this->expertReviewsCountXPath),
-									'expertRatingsCount' => $this->countElements($xml, $this->expertRatingsCountXPath),
-									'expertAverageRating' => $this->getAverageRating($xml, $this->expertRatingsCountXPath),
-								),
-								'citations' => array(
-									'availability' => $this->getAvailabilityInteger($xml, $this->citationsXPath),
-									'citationsCount' => $this->evaluateXPath($xml, $this->gvqCitationsCountXPath) + $this->evaluateXPath($xml, $this->restCitationsCountXPath),
-								)
-							);
+						'producerProfile' => array(
+							'availability' => $this->evaluateAvailability($xml, $this->producer_profile_xpath_rest, $this->producer_profile_xpath_gvq),
+							'organisationName' => $this->evaluateXPaths($xml, $this->organisation_name_xpath_rest, $this->organisation_name_xpath_gvq),
+						),
+						'producerComments' => array(
+							'availability' => $this->evaluateAvailability($xml, $this->producer_comments_xpath_rest, $this->producer_comments_xpath_gvq),
+							'supplementalInformation' => $supplementalInformation = $this->evaluateXPaths($xml, $this->supplemental_information_xpath_rest, $this->supplemental_information_xpath_gvq),
+							'knownProblems' => $this->evaluateXPaths($xml, $this->known_problems_xpath_rest, $this->known_problems_xpath_gvq),
+						),
+						'lineage' => array(
+							'availability' => $this->evaluateAvailability($xml, $this->lineage_xpath_rest, $this->lineage_xpath_gvq),
+							'processStepCount' => $this->evaluateXPaths($xml, $this->process_step_count_xpath_rest, $this->process_step_count_xpath_gvq),
+						),
+						'standardsComplaince' => array(
+							'availability' => $this->evaluateAvailability($xml, $this->standards_xpath_rest, $this->standards_xpath_gvq),
+							'standardName' => $this->evaluateXPaths($xml, $this->standard_name_xpath_rest, $this->standard_name_xpath_gvq),
+							'standardVersion' => $this->evaluateXPaths($xml, $this->standard_version_xpath_rest, $this->standard_version_xpath_gvq),
+						),
+						'qualityInformation' => array(
+							'availability' => $this->evaluateAvailability($xml, $this->quality_xpath_rest, $this->quality_xpath_gvq),
+							'scopeLevel' => $this->evaluateXPaths($xml, $this->scope_level_xpath_rest, $this->scope_level_xpath_gvq),
+						),
+						'userFeedback' => array(
+							'availability' => $this->evaluateAvailability($xml, $this->feedback_xpath_rest, $this->feedback_xpath_gvq),
+							'feedbacksCount' => $this->evaluateXPaths($xml, $this->feedbacks_count_xpath_rest, $this->feedbacks_count_xpath_gvq),
+							'ratingsCount' => $this->evaluateXPaths($xml, $this->ratings_count_xpath_rest, $this->ratings_count_xpath_gvq),
+							'feedbacksAverageRating' => $this->getAverageRating($xml, $this->ratings_count_xpath_gvq, $this->average_rating_level_1_xpath_gvq, $this->average_rating_level_2_xpath_gvq, $this->average_rating_level_3_xpath_gvq),
+						),
+						'expertReview' => array(
+							'availability' => $this->evaluateAvailability($xml, $this->review_xpath_rest, $this->review_xpath_gvq),
+							'expertReviewsCount' => $this->evaluateXPaths($xml, $this->reviews_count_xpath_rest, $this->reviews_count_xpath_gvq),
+							'expertRatingsCount' => $this->evaluateXPaths($xml, $this->reviews_ratings_count_xpath_rest, $this->reviews_ratings_count_xpath_gvq),
+							'expertAverageRating' => $this->getAverageRating($xml, $this->reviews_ratings_count_xpath_gvq, $this->reviews_average_level_4_rating_xpath_gvq, $this->reviews_average_level_5_rating_xpath_gvq, null),
+						),
+						'citations' => array(
+							'availability' => $this->evaluateAvailability($xml, $this->citations_xpath_rest, $this->citations_xpath_gvq),
+							'citationsCount' => $this->evaluateXPaths($xml, $this->citations_count_xpath_rest, $this->citations_count_xpath_gvq),
+						)
+					);
 								
 		return $summaryArray;
 	}
-
-	/* Function getStaticURLs
-	 * Generates an array populated with drilldown URLs for each GEO label facet
-	 * 
-	 * @param $producerURL String producer URL
-	 * @param $feedbackURL String feedback URL
-	 * @return array an array populated with drilldown URLs for each GEO label facet,
-	 * or null if $xml is empty
+	
+	/* 
+	 * Evaluates two XPath expressions and returns an availability integer
+	 * @param $xml DomDocument an XML document to process
+	 * @return integer 1 if at least one XPath expression returns true, or 0 if all XPaths expressions return false
 	 */
-	public function getStaticURLs($producerURL, $feedbackURL){
-		$staticURLsArray = array(
-								'producerProfile' => $producerURL,
-								'lineage' => $producerURL,
-								'producerComments' => $producerURL,
-								'standardsComplaince' => $producerURL,
-								'qualityInformation' => $producerURL,
-								'userFeedback' => $feedbackURL,
-								'expertReview' => $feedbackURL,
-								'citations' => $producerURL,
-								);
-								
-		return $staticURLsArray;
+	public function evaluateAvailability($xml, $path_1, $path_2){
+		$availability = 0;
+		if(empty($xml)){
+			return $availability;
+		}
+		
+		$xpath = new DOMXpath($xml);
+		$available_1 = $xpath->evaluate($path_1);
+		$available_2 = $xpath->evaluate($path_2);
+		
+		if(!empty($available_1) || !empty($available_2)){
+			$availability = 1;
+		}
+		
+		return $availability;
+	}
+	
+	/* Returns the result of XPaths evaluation.
+	 *
+	 * @param DOMDocument $xml XML document to iterate through
+	 * @param string $path XPath expression
+	 * @return integer or string result of XPath evaluation
+	 */
+	public function evaluateXPaths($xml, $path_1, $path_2){
+		if(empty($xml)){
+			return null;
+		}
+		$xpath = new DOMXpath($xml);
+		$eval_1 = $xpath->evaluate($path_1);
+		$eval_2 = $xpath->evaluate($path_2);
+
+		// Check if both expressions return a number, if so add them together and return the value
+		if(preg_match('/^\d+$/', $eval_1) && preg_match('/^\d+$/', $eval_2)){
+			return ($eval_1 + $eval_2);
+		}
+		// If first result is not empty, then return its value
+		if(!empty($eval_1)){
+			return $eval_1;
+		}
+		// If second result is not empty, then return its value
+		if(!empty($eval_2)){
+			return $eval_2;
+		}
+		// If any of the returned values are 0, then return 0
+		if($eval_1 == 0 || $eval_2 == 0){
+			return 0;
+		}
+		
+		return null;
 	}
 	
 	/* Function getDrilldownURLs
@@ -407,6 +458,29 @@ class XMLProcessor{
 								
 		return $drilldownURLsArray;
 	}
+	
+	/* Function getStaticURLs
+	 * Generates an array populated with drilldown URLs for each GEO label facet
+	 * 
+	 * @param $producerURL String producer URL
+	 * @param $feedbackURL String feedback URL
+	 * @return array an array populated with drilldown URLs for each GEO label facet,
+	 * or null if $xml is empty
+	 */
+	public function getStaticURLs($producerURL, $feedbackURL){
+		$staticURLsArray = array(
+								'producerProfile' => $producerURL,
+								'lineage' => $producerURL,
+								'producerComments' => $producerURL,
+								'standardsComplaince' => $producerURL,
+								'qualityInformation' => $producerURL,
+								'userFeedback' => $feedbackURL,
+								'expertReview' => $feedbackURL,
+								'citations' => $producerURL,
+								);
+								
+		return $staticURLsArray;
+	}
 
 	/* Function getJsonAvailabilityEncodings
 	 * Returns availability encoding for all 8 facets
@@ -464,7 +538,7 @@ class XMLProcessor{
 	}
 	
 	/* Function getAvailabilityInteger
-	 * Idenifies whether specified nodes 
+	 * Idenifies whether specified nodes exist in an xml document
 	 * 
 	 * @param $xml DomDocument an XML document to process
 	 * @return integer 1 if found nodes, or 0 if no nodes located
@@ -475,22 +549,6 @@ class XMLProcessor{
 			return $availability;
 		}
 		$xpath = new DOMXpath($xml);
-		
-		/*
-		$xpath->registerNamespace("gmd", "http://www.isotc211.org/2005/gmd");
-		$xpath->registerNamespace("gco", "http://www.isotc211.org/2005/gco");
-        $xpath->registerNamespace("gml", "http://www.opengis.net/gml");
-        $xpath->registerNamespace("gts", "http://www.isotc211.org/2005/gts");
-        $xpath->registerNamespace("srv", "http://www.isotc211.org/2005/srv");
-        $xpath->registerNamespace("geonet", "http://www.fao.org/geonetwork");
-        $xpath->registerNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-		
-		$xpath->registerNamespace("updated19115", "http://www.geoviqua.org/19115_updates");
-		$xpath->registerNamespace("xlink", "http://www.w3.org/1999/xlink");
-        $xpath->registerNamespace("gvq", "http://www.geoviqua.org/QualityInformationModel/4.0");
-        $xpath->registerNamespace("gmd19157", "http://www.geoviqua.org/gmd19157");
-		*/
-		
 		$nodes = $xpath->query($path);
 		
 		if ($nodes->length > 0){
@@ -531,22 +589,6 @@ class XMLProcessor{
 		}
 		return $count;
 	}
-
-	/* Returns integer number of nodes discovered in the XML document.
-	 *
-	 * @param DOMDocument $xml XML document to iterate through
-	 * @param string $path XPath expression with count()
-	 * @return integer number of nodes discovered in the XML document.
-	 */
-	public function evaluateXPath($xml, $path){
-		$count = 0;
-		if(empty($xml)){
-			return $count;
-		}
-		$xpath = new DOMXpath($xml);
-		$count = $xpath->evaluate($path);
-		return $count;
-	}
 	
 	/* Function getAverageRating
 	 * Calculates average rating.
@@ -555,27 +597,34 @@ class XMLProcessor{
 	 * @param string $path XPath expression of the nodes to locate in the XML document
 	 * @return average rating.
 	 */
-	public function getAverageRating($xml, $path){
-		$average = null;
+	public function getAverageRating($xml, $count_path, $path_1, $path_2, $path_3){
 		if(empty($xml)){
-			return $average;
+			return null;
 		}
+		$average = 0;
+		
 		$xpath = new DOMXpath($xml);
-		$result = array();
-		$nodes = $xpath->query($path);
-		if ($nodes->length > 0) {
-			$i = 0;
-			foreach ($nodes as $node){
-				// Check if node is not empty
-				if(preg_replace('/\s+/', '', $node->nodeValue) != ""){
-					$result[$i] = $node->nodeValue;
-					$i++;
-				}
-			}
+		$count = $xpath->evaluate($count_path);
+		$eval_1 = $xpath->evaluate($path_1);
+		$eval_2 = $xpath->evaluate($path_2);
+		$eval_3 = $xpath->evaluate($path_3);
+		
+		//die(var_dump($count_path));
+		
+		if(!preg_match('/^([0-9.]+)$/', $eval_1) || is_nan($eval_1)){
+			$eval_1 = 0;
 		}
-		if(!empty($result)){
-			$average = round(array_sum($result)/count($result), 1);
+		if(!preg_match('/^([0-9.]+)$/', $eval_2) || is_nan($eval_2)){
+			$eval_2 = 0;
 		}
+		if(!preg_match('/^([0-9.]+)$/', $eval_3) || is_nan($eval_3)){
+			$eval_3 = 0;
+		}
+		
+		if(!empty($count) && preg_match('/^([0-9.]+)$/', $count)){
+			$average = round((($eval_1 + $eval_2 + $eval_3)/$count), 1);
+		}
+		
 		return $average;
 	}
 	
@@ -742,6 +791,15 @@ class XMLProcessor{
 			return $joinedXML;
 		}
 		return $joinedXML;
+	}
+	
+	private function joinXPaths($xPath_1, $xPath_2){
+		$xPathsArray = array();
+		array_push($xPathsArray, $xPath_1);
+		array_push($xPathsArray, $xPath_2);
+		$xPathsArray = array_filter($xPathsArray);
+		$xPath = implode(" | ", $xPathsArray);
+		return $xPath;
 	}
 }
 ?>
