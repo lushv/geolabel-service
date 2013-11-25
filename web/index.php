@@ -147,13 +147,13 @@ $app->post('/api/v1/geolabel', function(Request $request) use ($app) {
 
 // *********************************  GET and POST to obtain GEO label availability encodings  **********************************
 
-$app->get('/api/v1/facets', function(Request $request) {
+$app->get('/api/v1/facets', function(Request $request) use ($app) {
 	$metadataURL = $request->query->get('metadata');
 	$feedbackURL = $request->query->get('feedback');
 	if(empty($metadataURL) && empty($feedbackURL)){
 		return new Response('<b>Bad request:</b> "metadata" and "feedback" query parameters are missing.', 400);
 	}
-	$xmlProcessor = new XMLProcessor();
+	$xmlProcessor = new XMLProcessor($app);
 	$metadataXML = null;
 	$feedbackXML = null;
 
@@ -178,8 +178,6 @@ $app->get('/api/v1/facets', function(Request $request) {
 		}
 	}	
 	
-	$xmlProcessor = new xmlProcessor();
-
 	$json = $xmlProcessor->getJsonDatasetSummary($metadataXML, $feedbackXML);
 	if(empty($json)){
 		return new Response('<b>Internal server error</b>: could not generate JSON response.', 500);
@@ -190,7 +188,7 @@ $app->get('/api/v1/facets', function(Request $request) {
 
 // ************************************  GET and POST for drilldown functionality  ****************************************
 
-$app->get('/api/v1/drilldown', function(Request $request) {
+$app->get('/api/v1/drilldown', function(Request $request) use ($app) {
 	$metadataURL = $request->query->get('metadata');
 	$feedbackURL = $request->query->get('feedback');
 	$facet = $request->query->get('facet');
@@ -205,7 +203,7 @@ $app->get('/api/v1/drilldown', function(Request $request) {
 	if(empty($metadataURL) && empty($feedbackURL)){
 		return new Response('<b>Bad request:</b> "metadata" and "feedback" query parameters are missing.', 400);
 	}
-	$xmlProcessor = new XMLProcessor();
+	$xmlProcessor = new XMLProcessor($app);
 	$metadataXML = null;
 	$feedbackXML = null;
 
