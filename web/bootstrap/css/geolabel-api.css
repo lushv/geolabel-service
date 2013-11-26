@@ -649,6 +649,7 @@ a:focus {
 }
 
 p {
+  font-size: 17px;
   margin: 0 0 10px;
 }
 
@@ -801,27 +802,6 @@ h3 small {
 
 h4 small {
   font-size: 14px;
-}
-
-.page-header {
-  width:100%;
-  background-color: #EFF5FB;
-  background-image: url('../img/header.png');
-  background-position: left center;
-  background-repeat: no-repeat;
-  height: 110px; /* height of the background image */
-  padding-top: 5px;
-  margin-right: auto;
-  margin-left: auto;
-  border-bottom: 2px solid #eeeeee;
-  text-align: center;  
-}
-
-.page-header h1 {
-  color: #1F5C99;
-  position:relative;
-  top: 60px;
-  left: 230px;
 }
 
 th h4{
@@ -6243,4 +6223,24 @@ a.badge:focus {
   text-align: center;
 }
 
+.page-header {
+  width:100%;
+  background-color: #EFF5FB;
+  background-image: url('../img/header.png');
+  background-position: left center;
+  background-repeat: no-repeat;
+  height: 110px; /* height of the background image? */
+  padding-top: 5px;  
+  margin-right: auto;
+  margin-left: auto;
+  border-bottom: 2px solid #eeeeee;
+  text-align: center;  
+}
+
+.page-header h1 {
+  color: #1F5C99;
+  position:relative;
+  top: 60px;
+  left: 230px;
+}
 
