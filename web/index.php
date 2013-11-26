@@ -286,7 +286,7 @@ $app->post('/api/v1/geolabel/demo', function(Request $request) use ($app) {
 	if(!empty($geonetworkID)){
 		$producerURL = 'http://uncertdata.aston.ac.uk:8080/geonetwork/srv/eng/xml_geoviqua?id=' . $geonetworkID .'&styleSheet=xml_iso19139.geoviqua.xsl';
 	}
-	$xmlProcessor = new XMLProcessor();
+	$xmlProcessor = new XMLProcessor($app);
 	$svgParser = new SVGParser();
 	
 	$producerXML = null;
