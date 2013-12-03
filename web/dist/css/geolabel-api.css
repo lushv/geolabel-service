@@ -7163,3 +7163,7 @@ p {
   top: 60px;
   left: 230px;
 }
+
+.table > thead > tr > th {
+  vertical-align: top;
+}

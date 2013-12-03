@@ -69,7 +69,7 @@ $app->get('/api/v1/geolabel', function(Request $request) use ($app) {
 	// Join two documents
 	$gvqXML = null;
 	if(!empty($metadataXML) && !empty($feedbackXML)){
-		$gvqXML = $this->xmlProcessor->joinXMLDoms($metadataXML, $feedbackXML);
+		$gvqXML = $xmlProcessor->joinXMLDoms($metadataXML, $feedbackXML);
 	}
 	elseif(!empty($metadataXML)){
 		$gvqXML = $metadataXML;
@@ -327,7 +327,7 @@ $app->post('/api/v1/geolabel/demo', function(Request $request) use ($app) {
 	// Join two documents
 	$gvqXML = null;
 	if(!empty($producerXML) && !empty($feedbackXML)){
-		$gvqXML = $this->xmlProcessor->joinXMLDoms($producerXML, $feedbackXML);
+		$gvqXML = $xmlProcessor->joinXMLDoms($producerXML, $feedbackXML);
 	}
 	elseif(!empty($producerXML)){
 		$gvqXML = $producerXML;
