@@ -54,34 +54,49 @@
 							<div id="geolabel_form_1_div">
 								<form id="geolabel_form_1" name="geolabel-form-1" action="" class="form-horizontal">
 									<fieldset>
-										<div class="control-group">
-											<label class="control-label" for="metadata_url_1">Enter metadata URL:</label>
-											<div class="controls">
-												<input id="metadata_url_1" class="input-xlarge" type="text" placeholder="http://" name="metadata_url">
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="metadata_url_1">Enter metadata URL:</label>
+											<div class="col-sm-6">
+												<input id="metadata_url_1" class="form-control input-xlarge" type="text" placeholder="http://" name="metadata_url">
 											</div>
 										</div>
-										<div class="control-group">
-											<label class="control-label" for="target_code_1">Enter target code:</label>
-											<div class="controls">
-												<input id="target_code_1" class="input-xlarge" type="text" placeholder="mtri2an1ib" name="target_code">
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="feedback_url_1">Enter feedback URL:</label>
+											<div class="col-sm-6">
+												<input id="feedback_url_1" class="form-control input-xlarge" type="text" placeholder="http://" name="feedback_url">
 											</div>
 										</div>
-										<div class="control-group">
-											<label class="control-label" for="target_codespace_1">Enter target codespace:</label>
-											<div class="controls">
-												<input id="target_codespace_1" class="input-xlarge" type="text" placeholder="opengis.uab.cat" name="target_codespace">
+										<div class="form-group">
+											<div class="col-sm-offset-3 col-sm-10">
+												<h4 class="small">Alternatively, you can provide a target code and a target code space for a feedback document.</h4>
 											</div>
 										</div>
-										<div class="control-group">
-											<label class="control-label" for="size_1">Enter GEO label size (px):</label>
-											<div class="controls">
-												<input id="size_1" class="input-xlarge" type="text" placeholder="200" name="size_1">
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="target_code_1">Enter target code:</label>
+											<div class="col-sm-6">
+												<input id="target_code_1" class="form-control input-xlarge" type="text" placeholder="mtri2an1ib" name="target_code">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="target_codespace_1">Enter target codespace:</label>
+											<div class="col-sm-6">
+												<input id="target_codespace_1" class="form-control input-xlarge" type="text" placeholder="opengis.uab.cat" name="target_codespace">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="size_1">Enter GEO label size (px):</label>
+											<div class="col-sm-6">
+												<input id="size_1" class="form-control input-xlarge" type="text" placeholder="200" name="size_1">
 											</div>
 										</div>
 										<br />
-										<button id="submit_btn_1" class="btn btn-large btn-primary" type="button">
-											Submit
-										</button>
+										<div class="form-group">
+											<div class="col-sm-offset-3 col-sm-10">
+												<button id="submit_btn_1" class="btn btn-large btn-primary" type="button">
+													Submit
+												</button>
+											</div>
+										</div>
 									</fieldset>
 								</form>
 							</div>
@@ -101,30 +116,34 @@
 								</div>
 							</div>
 							<div id="geolabel_form_2_div">
-								<form id="geolabel_form_2" name="geolabel-form-2" action="" class="form-horizontal">
+								<form id="geolabel_form_2" name="geolabel-form-2" action="" class="form-horizontal" role="form">
 									<fieldset>
-										<div class="control-group">
-											<label class="control-label" for="metadata">Select metadata document:</label>
-											<div class="controls">
+										<div class="form-group">
+											<label class="col-sm-4 control-label" for="metadata">Select metadata document:</label>
+											<div class="col-sm-6">
 												<input id="metadata" class="input-file" type="file" name="metadata">
 											</div>
 										</div>
-										<div class="control-group">
-											<label class="control-label" for="feedback">Select feedback document:</label>
-											<div class="controls">
+										<div class="form-group">
+											<label class="col-sm-4 control-label" for="feedback">Select feedback document:</label>
+											<div class="col-sm-6">
 												<input id="feedback" class="input-file" type="file" name="feedback">
 											</div>
 										</div>
-										<div class="control-group">
-											<label class="control-label" for="size">Enter GEO label size (px):</label>
-											<div class="controls">
-												<input id="size" class="input-xlarge" type="text" placeholder="200" name="size">
+										<div class="form-group">
+											<label class="col-sm-4 control-label" for="size">Enter GEO label size (px):</label>
+											<div class="col-sm-6">
+												<input id="size" class="form-control input-xlarge" type="text" placeholder="200" name="size">
 											</div>
 										</div>
 										<br />
-										<button id="submit_btn_2" class="btn btn-large btn-primary" type="button">
-											Submit
-										</button>
+										<div class="form-group">
+											<div class="col-sm-offset-4 col-sm-10">
+												<button id="submit_btn_2" class="btn btn-large btn-primary" type="button">
+													Submit
+												</button>
+											</div>
+										</div>
 									</fieldset>
 								</form>
 							</div>
@@ -146,45 +165,48 @@
 							<div id="geolabel_form_3_div">
 								<form id="geolabel_form_3" name="geolabel-form-3" action="" class="form-horizontal">
 									<fieldset>
-										<div class="control-group">
-											<label class="control-label" for="metadata_url_3">Select metadata document:</label>
-											<div class="controls">
-												<select id="metadata_url_3" name="metadata_url_3">
+										<div class="form-group">
+											<label class="col-sm-4 control-label" for="metadata_url_3">Select metadata document:</label>
+											<div class="col-sm-6">
+												<select class="form-control" id="metadata_url_3" name="metadata_url_3">
 												  <option value="">Please select metadata URL</option>
-												  <option value="http://schemas.geoviqua.org/GVQ/4.0/example_documents/PQM_UQM_combined/DigitalClimaticAtlas_mt_an_v10.xml">Digital Climatic Atlas combined doc...</option>
-												  <option value="http://schemas.geoviqua.org/GVQ/4.0/example_documents/PQMs/GLC_2000_GVQ_raw.xml">The Land Cover...</option>
+												  <option value="http://schemas.geoviqua.org/GVQ/4.0/example_documents/PQMs/DigitalClimaticAtlas.xml">Digital Climatic Atlas</option>
+												  <option value="http://schemas.geoviqua.org/GVQ/4.0/example_documents/PQMs/GLC_2000_GVQ_raw.xml">Global Land Cover 2000</option>
 												</select>
 											</div>
 										</div>
-										<div class="control-group">
-											<label class="control-label" for="target_code_3">Select target code:</label>
-											<div class="controls">
-												<select id="target_code_3" name="target_code_3">
+										<div class="form-group">
+											<label class="col-sm-4 control-label" for="target_code_3">Select target code:</label>
+											<div class="col-sm-6">
+												<select class="form-control" id="target_code_3" name="target_code_3">
 												  <option value="">Please select target code</option>
-												  <option value="mtri2an1ib">mtri2an1ib</option>
-												  <option value="LCL12_GrnBcn_1005_07">LCL12_GrnBcn_1005_07</option>
+												  <option value="ricefieldsflooding2006-2007">ricefieldsflooding2006-2007</option>
 												</select>
 											</div>
 										</div>
-										<div class="control-group">
-											<label class="control-label" for="target_codespace_3">Enter target codespace:</label>
-											<div class="controls">
-												<select id="target_codespace_3" name="target_codespace_3">
+										<div class="form-group">
+											<label class="col-sm-4 control-label" for="target_codespace_3">Enter target codespace:</label>
+											<div class="col-sm-6">
+												<select class="form-control" id="target_codespace_3" name="target_codespace_3">
 												  <option value="">Please select target codespace</option>
 												  <option value="opengis.uab.cat">opengis.uab.cat</option>
 												</select>
 											</div>
 										</div>
-										<div class="control-group">
-											<label class="control-label" for="size_3">Enter GEO label size (px):</label>
-											<div class="controls">
-												<input id="size_3" class="input-xlarge" type="text" placeholder="200" name="size_3">
+										<div class="form-group">
+											<label class="col-sm-4 control-label" for="size_3">Enter GEO label size (px):</label>
+											<div class="col-sm-6">
+												<input id="size_3" class="form-control input-xlarge" type="text" placeholder="200" name="size_3">
 											</div>
 										</div>
 										<br />
-										<button id="submit_btn_3" class="btn btn-large btn-primary" type="button">
-											Submit
-										</button>
+										<div class="form-group">
+											<div class="col-sm-offset-4 col-sm-10">
+												<button id="submit_btn_3" class="btn btn-large btn-primary" type="button">
+													Submit
+												</button>
+											</div>
+										</div>
 									</fieldset>
 								</form>
 							</div>
@@ -192,12 +214,11 @@
 					</div><!-- /.tab-content -->
 				</div><!-- /.tabbable -->
 			</div><!-- /.row -->
-
-<!-- jQuery via Google + local fallback, see h5bp.com -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  	<script>window.jQuery || document.write('<script src="bootstrap/js/jquery-1.7.1.min.js"><\/script>')</script>
-<!-- Bootstrap JS: compiled and minified -->
-    <script src="bootstrap/js/bootstrap.min.js"></script>
+			<!-- jQuery via Google + local fallback, see h5bp.com -->
+				<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+				<script>window.jQuery || document.write('<script src="bootstrap/js/jquery-1.7.1.min.js"><\/script>')</script>
+			<!-- Bootstrap JS: compiled and minified -->
+				<script src="bootstrap/js/bootstrap.min.js"></script>
 			<hr>
 		</div>
 	</body>

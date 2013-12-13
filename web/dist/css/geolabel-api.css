@@ -7098,10 +7098,6 @@ td.visible-print {
 
 /* ---------------------------------------   CUSTOM STYLING   ------------------------------------------------ */
 
-#submit_btn_1, #submit_btn_2, #submit_btn_3 {
-  margin: 0px 0px 0px 370px;
-}
-
 #metadata_url_3, #target_code_3, #target_codespace_3 {
   width: 285px;
 }
@@ -7166,4 +7162,8 @@ p {
 
 .table > thead > tr > th {
   vertical-align: top;
+}
+
+.tab-content {
+  padding-top: 20px;
 }

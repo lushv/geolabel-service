@@ -17,15 +17,16 @@ $(function() {
 	
 	// validate and process form here
 	var metadata_url = $("#metadata_url_1").val();
+	var feedback_url = $("#feedback_url_1").val();
 	var target_code = $("#target_code_1").val();
 	var target_codespace = $("#target_codespace_1").val();
 	var size = $("#size_1").val();
 	
 	// encode URLs
 	metadata_url = encodeURIComponent(metadata_url);
-	var feedback_url = "";
+	feedback_url = encodeURIComponent(feedback_url);
 	if(target_code != ''){
-		feedback_url = encodeURIComponent('https://geoviqua.stcorp.nl/api/v1/feedback/items/search?target_code=' + target_code + '&target_codespace=' + target_codespace + '&view=full&format=xml');
+		feedback_url = encodeURIComponent('https://geoviqua.stcorp.nl/api/v1/feedback/collections/?format=xml&target_code=' + target_code + '&target_codespace=' + target_codespace);
 	}
 	
 	dataString = 'metadata=' + metadata_url + '&feedback=' + feedback_url + '&size=' + size;
@@ -109,7 +110,7 @@ $(function() {
 	metadata_url = encodeURIComponent(metadata_url);
 	var feedback_url = "";
 	if(target_code != ''){
-		feedback_url = encodeURIComponent('https://geoviqua.stcorp.nl/api/v1/feedback/items/search?target_code=' + target_code + '&target_codespace=' + target_codespace + '&view=full&format=xml');
+		feedback_url = encodeURIComponent('https://geoviqua.stcorp.nl/api/v1/feedback/collections/?format=xml&target_code=' + target_code + '&target_codespace=' + target_codespace);
 	}
 	
 	dataString = 'metadata=' + metadata_url + '&feedback=' + feedback_url + '&size=' + size;
