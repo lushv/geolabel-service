@@ -10,6 +10,32 @@ use Symfony\Component\HttpFoundation\Response as Response;
 use Symfony\Component\HttpFoundation\Request as Request;
 
 $app = new Silex\Application();
+
+// XPath configuration files caching
+$cache_gvq_file = __DIR__."/../config/transformerGVQ.json";
+$cache_rest_file = __DIR__."/../config/transformerRest.json";
+$cache_life = '86400'; //caching time (24 hours), in seconds
+
+// Use @ to supress warnings
+$filemtime_gvq = @filemtime($cache_gvq_file);  // returns FALSE if file does not exist
+$filemtime_rest = @filemtime($cache_rest_file);  // returns FALSE if file does not exist
+
+// Check if transformerGVQ.json expired
+if(!$filemtime_gvq or (time() - $filemtime_gvq >= $cache_life)){
+	$transformer_gvq = @file_get_contents("http://geoviqua.github.io/geolabel/mappings/transformerGVQ.json");
+	if(!($transformer_gvq === false)){
+		file_put_contents($cache_gvq_file, $transformer_gvq);
+	}
+}
+// Check if transformerRest.json expired
+if(!$filemtime_rest or (time() - $filemtime_rest >= $cache_life)){
+	$transformer_rest = @file_get_contents("http://geoviqua.github.io/geolabel/mappings/transformerRest.json");
+	if(!($transformer_rest === false)){
+		file_put_contents($cache_rest_file, $transformer_rest);
+	}
+}
+
+// Register configuration files
 $app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__."/../config/transformerRest.json"));
 $app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__."/../config/transformerGVQ.json"));
 
@@ -193,16 +219,16 @@ $app->get('/api/v1/drilldown', function(Request $request) use ($app) {
 	$feedbackURL = $request->query->get('feedback');
 	$facet = $request->query->get('facet');
 	
-	$metadataURL = $request->query->get('metadata');
-	$feedbackURL = $request->query->get('feedback');
-	
 	if(empty($facet)){
 		return new Response('<b>Bad request:</b> "facet" query parameter is missing.', 400);
 	}
 	
+	/*
 	if(empty($metadataURL) && empty($feedbackURL)){
 		return new Response('<b>Bad request:</b> "metadata" and "feedback" query parameters are missing.', 400);
 	}
+	*/
+	
 	$xmlProcessor = new XMLProcessor($app);
 	$metadataXML = null;
 	$feedbackXML = null;

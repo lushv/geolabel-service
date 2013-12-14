@@ -29,7 +29,7 @@
 				"availabilityPath": "boolean(normalize-space(string(//*[local-name()='identificationInfo']//*[local-name()='supplementalInformation'])))",
 				"hoverover": {
 					"facetName": "Producer Comments",
-					"template": "Supplemental information: %s. Known problems: %s.",
+					"template": "Supplemental information: %s. %sKnown problems: %s.",
 					"text": {
 						"supplementalInformation": "normalize-space(string(//*[local-name()='identificationInfo']//*[local-name()='supplementalInformation']))",
 						"knownProblemsPath": ""

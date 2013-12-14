@@ -21,12 +21,9 @@
 						<xsl:call-template name="supplementalInfo"/>
 				</xsl:for-each>
 				<br />
-				<table width="95%" border="2" cellpadding="5" cellspacing="2">				
-				<th><h4>Discovered Issues</h4></th>
 				<xsl:for-each select="//gvq:dataQualityInfo//gvq:discoveredIssue">
 						<xsl:call-template name="discoveredIssue"/>
 				</xsl:for-each>
-				</table>
 				</div>
           </body>
         </html>
@@ -52,6 +49,8 @@
 			<xsl:variable name="knownProblem" select="gvq:knownProblem/gco:CharacterString"/>
 			<xsl:variable name="workAround" select="gvq:workAround/gco:CharacterString"/>
 			<xsl:if test="$knownProblem">
+				<table width="95%" border="2" cellpadding="5" cellspacing="2">				
+				<th><h4>Discovered Issues</h4></th>
 				<tr>
 					<td>
 						<b>Known Problem:</b><br />
@@ -60,6 +59,7 @@
 						<xsl:value-of select="$workAround"/><br />
 					</td>
 				</tr>
+				</table>
 			</xsl:if>
 		</xsl:for-each>
     </xsl:template>

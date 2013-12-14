@@ -50,7 +50,10 @@ class Drilldown{
 			return $html;
 		} 
 		else {
-			return 'XSL transformation failed.';
+			// If no document is supplied, return an empty styled page by default
+			$dom = new DOMDocument('1.0', 'UTF-8');
+			return $xsltProcessor->transformToXML($dom);
+			//return 'XSL transformation failed.';
 		}
 	}
 	

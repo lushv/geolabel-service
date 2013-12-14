@@ -49,7 +49,7 @@ $(function() {
 			$("#geolabel_1").append(xml);
 		  },
 		  error:function(){
-			$("#geolabel_1").html("An error occured.");
+			$("#geolabel_1").html("An error occurred.");
 		  },
 		}); // -- End of Ajax request to get dataset details
 	}) // -- End of on label click function
@@ -133,7 +133,7 @@ $(function() {
 			$("#geolabel_3").append(xml);
 		  },
 		  error:function(){
-			$("#geolabel_3").html("An error occured.");
+			$("#geolabel_3").html("An error occurred.");
 		  },
 		}); // -- End of Ajax request to get dataset details
 	}) // -- End of on label click function
