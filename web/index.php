@@ -12,32 +12,22 @@ use Symfony\Component\HttpFoundation\Request as Request;
 $app = new Silex\Application();
 
 // XPath configuration files caching
-$cache_gvq_file = __DIR__."/../config/transformerGVQ.json";
-$cache_rest_file = __DIR__."/../config/transformerRest.json";
+$cache_transformer_file = __DIR__."/../config/transformer.json";
 $cache_life = '86400'; //caching time (24 hours), in seconds
 
 // Use @ to supress warnings
-$filemtime_gvq = @filemtime($cache_gvq_file);  // returns FALSE if file does not exist
-$filemtime_rest = @filemtime($cache_rest_file);  // returns FALSE if file does not exist
+$filemtime_gvq = @filemtime($cache_transformer_file);  // returns FALSE if file does not exist
 
-// Check if transformerGVQ.json expired
+// Check if transformer.json expired
 if(!$filemtime_gvq or (time() - $filemtime_gvq >= $cache_life)){
-	$transformer_gvq = @file_get_contents("http://geoviqua.github.io/geolabel/mappings/transformerGVQ.json");
-	if(!($transformer_gvq === false)){
-		file_put_contents($cache_gvq_file, $transformer_gvq);
-	}
-}
-// Check if transformerRest.json expired
-if(!$filemtime_rest or (time() - $filemtime_rest >= $cache_life)){
-	$transformer_rest = @file_get_contents("http://geoviqua.github.io/geolabel/mappings/transformerRest.json");
-	if(!($transformer_rest === false)){
-		file_put_contents($cache_rest_file, $transformer_rest);
+	$transformer = @file_get_contents("http://geoviqua.github.io/geolabel/mappings/transformer.json");
+	if(!($transformer === false)){
+		file_put_contents($cache_transformer_file, $transformer);
 	}
 }
 
 // Register configuration files
-$app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__."/../config/transformerRest.json"));
-$app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__."/../config/transformerGVQ.json"));
+$app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__."/../config/transformer.json"));
 
 // enable error messages
 //$app['debug'] = true;
@@ -269,7 +259,7 @@ $app->get('/api/v1/drilldown', function(Request $request) use ($app) {
 		case "standards_complaince":
 			$stylesheet_url = "stylesheets/GVQ_StandardsCompliance.xsl";
 			break;
-		case "quality":
+		case "quality_information":
 			$stylesheet_url = "stylesheets/GVQ_Quality.xsl";
 			break;
 		case "user_feedback":
@@ -278,7 +268,7 @@ $app->get('/api/v1/drilldown', function(Request $request) use ($app) {
 		case "expert_review":
 			$stylesheet_url = "stylesheets/GVQ_ExpertReviews.xsl";
 			break;
-		case "citations":
+		case "citations_information":
 			$stylesheet_url = "stylesheets/GVQ_Citations.xsl";
 			break;
 		default:
