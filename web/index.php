@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__.'/../vendor/autoload.php';
 
+use GeoViQua\GeoLabel\XML\MappingsProcessor as MappingsProcessor;
 use GeoViQua\GeoLabel\XML\XMLProcessor as XMLProcessor;
 use GeoViQua\GeoLabel\LML\LMLParser as LMLParser;
 use GeoViQua\GeoLabel\SVG\SVGParser as SVGParser;
@@ -52,51 +53,44 @@ $app->get('/', function() {
 $app->get('/api/v1/geolabel', function(Request $request) use ($app) {
 	$metadataURL = $request->query->get('metadata');
 	$feedbackURL = $request->query->get('feedback');
+	
 	if(empty($metadataURL) && empty($feedbackURL)){
 		return new Response('<b>Bad request:</b> "metadata" and "feedback" query parameters are missing.', 400);
 	}
 	
-	$xmlProcessor = new XMLProcessor($app);
-	$metadataXML = null;
-	$feedbackXML = null;
+	$parentMetadataURL = $request->query->get('parent_metadata');
+	$parentFeedbackURL = $request->query->get('parent_feedback');
     $size = $request->query->get('size');
     $format = $request->query->get('format');
-	// Check if metadata query parameter is set up and 
-	// try to obtain XML document
+
+	$xmlProcessor = new XMLProcessor();
+	$mappingsProcessor = new MappingsProcessor($app);
+	$metadataXML = null;
+	$feedbackXML = null;
+	
+	// Check if metadata query parameter is set up and try to obtain XML document
 	if(!empty($metadataURL)){
-		// Decode URLs
-		$metadataURL = urldecode($metadataURL);
-		$metadataXML = $xmlProcessor->getXmlFromURL($metadataURL);
+		$metadataXML = $xmlProcessor->getXmlFromURL(urldecode($metadataURL));
 		if(empty($metadataXML)){
 			return new Response('<b>Bad request:</b> could not retrieve an XML file from "metadata" URL.', 400);
 		}
 	}
-	// Check if feedback query parameter is set up and 
-	// try to obtain XML document
+	// Check if feedback query parameter is set up and try to obtain XML document
 	if(!empty($feedbackURL)){
-		// Decode URLs
-		$feedbackURL = urldecode($feedbackURL);
-		$feedbackXML = $xmlProcessor->getXmlFromURL($feedbackURL);
+		$feedbackXML = $xmlProcessor->getXmlFromURL(urldecode($feedbackURL));
 		if(empty($feedbackXML)){
 			return new Response('<b>Bad request:</b> could not retrieve an XML file from "feedback" URL.', 400);
 		}
-	}	
-	
+	}
 	// Join two documents
-	$gvqXML = null;
-	if(!empty($metadataXML) && !empty($feedbackXML)){
-		$gvqXML = $xmlProcessor->joinXMLDoms($metadataXML, $feedbackXML);
-	}
-	elseif(!empty($metadataXML)){
-		$gvqXML = $metadataXML;
-	}
-	elseif(!empty($feedbackXML)){
-		$gvqXML = $feedbackXML;
-	}		
+	$gvqXML = $xmlProcessor->joinXMLDoms($metadataXML, $feedbackXML);
+	// Join parent documents
+	$parentGvqXML = $xmlProcessor->joinXMLFiles($parentMetadataURL, $parentFeedbackURL);
+	
 	// Get all data from the XML document into 3 arrays
-	$availabilityArray = $xmlProcessor->getAvailabilityEncodings($gvqXML);
-	$hoveroverTextArray = $xmlProcessor->getHoveroverText($gvqXML);
-	$drilldownURLsArray = $xmlProcessor->getDrilldownURLs($metadataURL, $feedbackURL);
+	$availabilityArray = $mappingsProcessor->getAvailabilityEncodings($gvqXML, $parentGvqXML);
+	$hoveroverTextArray = $mappingsProcessor->getHoveroverText($gvqXML);
+	$drilldownURLsArray = $mappingsProcessor->getDrilldownURLs($metadataURL, $feedbackURL);
 	
 	$svgParser = new SVGParser();
 	$svg = $svgParser->constructSVG($availabilityArray, $hoveroverTextArray, $drilldownURLsArray, $size);
@@ -115,7 +109,7 @@ $app->post('/api/v1/geolabel', function(Request $request) use ($app) {
 		return new Response('<b>Bad request:</b> "metadata" and "feedback" XML documents are missing.', 400);
 	}
 
-	$xmlProcessor = new XMLProcessor($app);
+	$MappingsProcessor = new MappingsProcessor($app);
 	$metadataXML = null;
 	$feedbackXML = null;
 	if(!empty($metadataFile)){
@@ -139,7 +133,7 @@ $app->post('/api/v1/geolabel', function(Request $request) use ($app) {
 	// Join two documents
 	$gvqXML = null;
 	if(!empty($metadataXML) && !empty($feedbackXML)){
-		$gvqXML = $xmlProcessor->joinXMLDoms($metadataXML, $feedbackXML);
+		$gvqXML = $MappingsProcessor->joinXMLDoms($metadataXML, $feedbackXML);
 	}
 	elseif(!empty($metadataXML)){
 		$gvqXML = $metadataXML;
@@ -148,9 +142,9 @@ $app->post('/api/v1/geolabel', function(Request $request) use ($app) {
 		$gvqXML = $feedbackXML;
 	}
 	// Get all data from the XML document into 3 arrays
-	$availabilityArray = $xmlProcessor->getAvailabilityEncodings($gvqXML);
-	$hoveroverTextArray = $xmlProcessor->getHoveroverText($gvqXML);
-	$drilldownURLsArray = $xmlProcessor->getDrilldownURLs($metadataURL, $feedbackURL);
+	$availabilityArray = $MappingsProcessor->getAvailabilityEncodings($gvqXML);
+	$hoveroverTextArray = $MappingsProcessor->getHoveroverText($gvqXML);
+	$drilldownURLsArray = $MappingsProcessor->getDrilldownURLs($metadataURL, $feedbackURL);
 	
 	$svgParser = new SVGParser();
 	$svg = $svgParser->constructSVG($availabilityArray, $hoveroverTextArray, $drilldownURLsArray, $size);
@@ -169,7 +163,7 @@ $app->get('/api/v1/facets', function(Request $request) use ($app) {
 	if(empty($metadataURL) && empty($feedbackURL)){
 		return new Response('<b>Bad request:</b> "metadata" and "feedback" query parameters are missing.', 400);
 	}
-	$xmlProcessor = new XMLProcessor($app);
+	$MappingsProcessor = new MappingsProcessor($app);
 	$metadataXML = null;
 	$feedbackXML = null;
 
@@ -178,7 +172,7 @@ $app->get('/api/v1/facets', function(Request $request) use ($app) {
 	if(!empty($metadataURL)){
 		// Decode URLs
 		$metadataURL = urldecode($metadataURL);
-		$metadataXML = $xmlProcessor->getXmlFromURL($metadataURL);
+		$metadataXML = $MappingsProcessor->getXmlFromURL($metadataURL);
 		if(empty($metadataXML)){
 			return new Response('<b>Bad request:</b> could not retrieve an XML file from "metadata" URL.', 400);
 		}
@@ -188,13 +182,13 @@ $app->get('/api/v1/facets', function(Request $request) use ($app) {
 	if(!empty($feedbackURL)){
 		// Decode URLs
 		$feedbackURL = urldecode($feedbackURL);
-		$feedbackXML = $xmlProcessor->getXmlFromURL($feedbackURL);
+		$feedbackXML = $MappingsProcessor->getXmlFromURL($feedbackURL);
 		if(empty($feedbackXML)){
 			return new Response('<b>Bad request:</b> could not retrieve an XML file from "feedback" URL.', 400);
 		}
 	}	
 	
-	$json = $xmlProcessor->getJsonDatasetSummary($metadataXML, $feedbackXML);
+	$json = $MappingsProcessor->getJsonDatasetSummary($metadataXML, $feedbackXML);
 	if(empty($json)){
 		return new Response('<b>Internal server error</b>: could not generate JSON response.', 500);
 	}
@@ -219,7 +213,7 @@ $app->get('/api/v1/drilldown', function(Request $request) use ($app) {
 	}
 	*/
 	
-	$xmlProcessor = new XMLProcessor($app);
+	$MappingsProcessor = new MappingsProcessor($app);
 	$metadataXML = null;
 	$feedbackXML = null;
 
@@ -228,7 +222,7 @@ $app->get('/api/v1/drilldown', function(Request $request) use ($app) {
 	if(!empty($metadataURL)){
 		// Decode URLs
 		$metadataURL = urldecode($metadataURL);
-		$metadataXML = $xmlProcessor->getXmlFromURL($metadataURL);
+		$metadataXML = $MappingsProcessor->getXmlFromURL($metadataURL);
 		if(empty($metadataXML)){
 			return new Response('<b>Bad request:</b> could not retrieve an XML file from "metadata" URL.', 400);
 		}
@@ -238,7 +232,7 @@ $app->get('/api/v1/drilldown', function(Request $request) use ($app) {
 	if(!empty($feedbackURL)){
 		// Decode URLs
 		$feedbackURL = urldecode($feedbackURL);
-		$feedbackXML = $xmlProcessor->getXmlFromURL($feedbackURL);
+		$feedbackXML = $MappingsProcessor->getXmlFromURL($feedbackURL);
 		if(empty($feedbackXML)){
 			return new Response('<b>Bad request:</b> could not retrieve an XML file from "feedback" URL.', 400);
 		}
@@ -302,8 +296,7 @@ $app->post('/api/v1/geolabel/demo', function(Request $request) use ($app) {
 	if(!empty($geonetworkID)){
 		$producerURL = 'http://uncertdata.aston.ac.uk:8080/geonetwork/srv/eng/xml_geoviqua?id=' . $geonetworkID .'&styleSheet=xml_iso19139.geoviqua.xsl';
 	}
-	$xmlProcessor = new XMLProcessor($app);
-	$svgParser = new SVGParser();
+	$MappingsProcessor = new MappingsProcessor($app);
 	
 	$producerXML = null;
 	$feedbackXML = null;
@@ -319,7 +312,7 @@ $app->post('/api/v1/geolabel/demo', function(Request $request) use ($app) {
 	elseif(!empty($producerURL)){
 		// Decode URLs
 		$producerURL = urldecode($producerURL);
-		$producerXML = $xmlProcessor->getXmlFromURL($producerURL);
+		$producerXML = $MappingsProcessor->getXmlFromURL($producerURL);
 		if(empty($producerXML)){
 			if(!empty($geonetworkID)){
 				return new Response('<b>Bad request:</b> could not retrieve an XML file from GeoNetwork. No such XML file ID.', 400);
@@ -334,7 +327,7 @@ $app->post('/api/v1/geolabel/demo', function(Request $request) use ($app) {
 	$size = $request->get('size');
 	if(!empty($targetCode)){
 		$feedbackURL = 'https://geoviqua.stcorp.nl/api/v1/feedback/items/search?target_code=' . $targetCode . '&target_codespace=' . $targetCodespace . '&view=full&format=xml';
-		$feedbackXML = $xmlProcessor->getXmlFromURL($feedbackURL);
+		$feedbackXML = $MappingsProcessor->getXmlFromURL($feedbackURL);
 		if(empty($feedbackXML)){
 			return new Response('<b>Bad request:</b> could not retrieve an XML file from feedback server.', 400);
 		}
@@ -343,7 +336,7 @@ $app->post('/api/v1/geolabel/demo', function(Request $request) use ($app) {
 	// Join two documents
 	$gvqXML = null;
 	if(!empty($producerXML) && !empty($feedbackXML)){
-		$gvqXML = $xmlProcessor->joinXMLDoms($producerXML, $feedbackXML);
+		$gvqXML = $MappingsProcessor->joinXMLDoms($producerXML, $feedbackXML);
 	}
 	elseif(!empty($producerXML)){
 		$gvqXML = $producerXML;
@@ -352,9 +345,9 @@ $app->post('/api/v1/geolabel/demo', function(Request $request) use ($app) {
 		$gvqXML = $feedbackXML;
 	}		
 	// Get all data from the XML document into 3 arrays
-	$availabilityArray = $xmlProcessor->getAvailabilityEncodings($gvqXML);
-	$hoveroverTextArray = $xmlProcessor->getHoveroverText($gvqXML);
-	$drilldownURLsArray = $xmlProcessor->getDrilldownURLs($producerURL, $feedbackURL);
+	$availabilityArray = $MappingsProcessor->getAvailabilityEncodings($gvqXML);
+	$hoveroverTextArray = $MappingsProcessor->getHoveroverText($gvqXML);
+	$drilldownURLsArray = $MappingsProcessor->getDrilldownURLs($producerURL, $feedbackURL);
 	
 	$svgParser = new SVGParser();
 	$svg = $svgParser->constructSVG($availabilityArray, $hoveroverTextArray, $drilldownURLsArray, $size);

@@ -18,7 +18,7 @@
       "facetDescriptions":[
          {
             "producerProfile":{
-               "availabilityPath":"boolean(normalize-space(string(//*[local-name()='contact']/*[local-name()='CI_ResponsibleParty'] | //*[local-name()='ptcontac']/*[local-name()='cntinfo'] | //*[local-name()='pointOfContact']/*[local-name()='CI_ResponsibleParty'])))",
+               "availabilityPath":"boolean(normalize-space(concat(string(//*[local-name()='contact']/*[local-name()='CI_ResponsibleParty']), string(//*[local-name()='ptcontac']/*[local-name()='cntinfo']), string(//*[local-name()='pointOfContact']/*[local-name()='CI_ResponsibleParty']))))",
                "hoverover":{
                   "facetName":"Producer Profile",
                   "template":"Organisation name: %s.",
