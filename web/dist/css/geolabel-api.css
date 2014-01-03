@@ -7124,7 +7124,11 @@ p {
 }
 
 .geolabel-svg-div {
-  margin: 10px 0px 0px 0px;
+  width: 200px;
+  height: 200px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 10px;
 }
 
 .spinner {

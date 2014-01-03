@@ -38,7 +38,7 @@ class SVGParser{
 			return null;
 		}
 		if(empty($size)){
-			$size = 250;
+			$size = 200;
 		}
 		$labelSVG = $this->svg->getHeader($size);
 		$labelSVG .= $this->svg->getFacetsGroupOpeningTag();

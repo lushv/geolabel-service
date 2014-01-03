@@ -589,8 +589,8 @@ class SVG{
 	public function getHeader($size){
 		$scale = $size/250;
 		return 	
-	'<svg version="1.1" id="geolabel_svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	width="'.$size.'" height="'.$size.'" xml:space="preserve">
+	'<svg version="1.1" id="geolabel_svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+	width="' . $size . '" height="' . $size . '" xml:space="preserve" preserveAspectRatio="xMinYMin meet" viewBox="0 0 ' . $size . ' ' . $size .'">
 		<g class="size_group" id="size_group" transform="scale('.$scale.')">';
 	}
 	
