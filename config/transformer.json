@@ -36,10 +36,13 @@
                "availabilityPath":"boolean(normalize-space(string(//*[local-name()='identificationInfo']//*[local-name()='supplementalInformation'] | //*[local-name()='dataQualityInfo']//*[local-name()='GVQ_DiscoveredIssue']/*[local-name()='knownProblem'])))",
                "hoverover":{
                   "facetName":"Producer Comments",
-                  "template":"Supplemental information: %s. Known problems: %s.",
+                  "template":"Supplemental information: %s. %sFirst of %s known issues: %s.",
                   "text":{
-                     "supplementalInformation":"normalize-space(string(//*[local-name()='identificationInfo']//*[local-name()='supplementalInformation']))",
-                     "knownProblemsPath":"normalize-space(string(//*[local-name()='dataQualityInfo']//*[local-name()='GVQ_DiscoveredIssue']/*[local-name()='knownProblem']))"
+                     "supplementalInformationPath":"normalize-space(string(//*[local-name()='identificationInfo']//*[local-name()='supplementalInformation']))",
+					 
+					"EOL":"\n",
+					"knownProblemsCountPath":"count(//*[local-name()='dataQualityInfo']//*[local-name()='GVQ_DiscoveredIssue']/*[local-name()='knownProblem'])",
+					"knownProblemsPath":"normalize-space(string(//*[local-name()='dataQualityInfo']//*[local-name()='GVQ_DiscoveredIssue']/*[local-name()='knownProblem']))"
                   }
                },
                "drilldown":{

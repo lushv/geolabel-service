@@ -89,6 +89,23 @@
 												<input id="size_1" class="form-control input-xlarge" type="text" placeholder="200" name="size_1">
 											</div>
 										</div>
+										<div class="form-group">
+											<div class="col-sm-offset-3 col-sm-10">
+												<h4 class="small">Additionally, you can specify parent metadata and feedback documents to test <b>'at a higher level'</b> GEO label functionality:</h4>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="parent_metadata_url_1">Enter parent metadata URL:</label>
+											<div class="col-sm-6">
+												<input id="parent_metadata_url_1" class="form-control input-xlarge" type="text" placeholder="http://" name="parent_metadata_url">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="parent_feedback_url_1">Enter parent feedback URL:</label>
+											<div class="col-sm-6">
+												<input id="parent_feedback_url_1" class="form-control input-xlarge" type="text" placeholder="http://" name="parent_feedback_url">
+											</div>
+										</div>
 										<br />
 										<div class="form-group">
 											<div class="col-sm-offset-3 col-sm-10">
@@ -128,6 +145,18 @@
 											<label class="col-sm-4 control-label" for="feedback">Select feedback document:</label>
 											<div class="col-sm-6">
 												<input id="feedback" class="input-file" type="file" name="feedback">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-4 control-label" for="parent_metadata">Select parent metadata document:</label>
+											<div class="col-sm-6">
+												<input id="parent_metadata" class="input-file" type="file" name="parent_metadata">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-4 control-label" for="parent_feedback">Select parent feedback document:</label>
+											<div class="col-sm-6">
+												<input id="parent_feedback" class="input-file" type="file" name="parent_feedback">
 											</div>
 										</div>
 										<div class="form-group">
@@ -172,6 +201,8 @@
 												  <option value="">Please select metadata URL</option>
 												  <option value="http://schemas.geoviqua.org/GVQ/4.0/example_documents/PQMs/DigitalClimaticAtlas.xml">Digital Climatic Atlas</option>
 												  <option value="http://schemas.geoviqua.org/GVQ/4.0/example_documents/PQMs/GLC_2000_GVQ_raw.xml">Global Land Cover 2000</option>
+												  <option value="http://schemas.geoviqua.org/GVQ/4.0/example_documents/PQMs/Flooding_monitoring_SIGPAC_enriched.xml">Flooding Monitoring SIGPAC</option>
+												  <option value="http://schemas.geoviqua.org/GVQ/4.0/example_documents/PQMs/LandsatCategorical_classification.xml">Landsat Categorical Classification</option>
 												</select>
 											</div>
 										</div>
@@ -188,6 +219,41 @@
 											<label class="col-sm-4 control-label" for="target_codespace_3">Enter target codespace:</label>
 											<div class="col-sm-6">
 												<select class="form-control" id="target_codespace_3" name="target_codespace_3">
+												  <option value="">Please select target codespace</option>
+												  <option value="opengis.uab.cat">opengis.uab.cat</option>
+												</select>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-sm-offset-4 col-sm-10">
+												<h4 class="small">Additionally, you can specify parent metadata and feedback documents:</h4>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-4 control-label" for="parent_metadata_url_3">Select parent metadata document:</label>
+											<div class="col-sm-6">
+												<select class="form-control" id="parent_metadata_url_3" name="parent_metadata_url_3">
+												  <option value="">Please select parent metadata URL</option>
+												  <option value="http://schemas.geoviqua.org/GVQ/4.0/example_documents/PQMs/DigitalClimaticAtlas.xml">Digital Climatic Atlas</option>
+												  <option value="http://schemas.geoviqua.org/GVQ/4.0/example_documents/PQMs/GLC_2000_GVQ_raw.xml">Global Land Cover 2000</option>
+												  <option value="http://schemas.geoviqua.org/GVQ/4.0/example_documents/PQMs/Flooding_monitoring_SIGPAC_enriched.xml">Flooding Monitoring SIGPAC</option>
+												  <option value="http://schemas.geoviqua.org/GVQ/4.0/example_documents/PQMs/LandsatCategorical_classification.xml">Landsat Categorical Classification</option>
+												</select>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-4 control-label" for="parent_target_code_3">Select parent feedback target code:</label>
+											<div class="col-sm-6">
+												<select class="form-control" id="parent_target_code_3" name="parent_target_code_3">
+												  <option value="">Please select target code</option>
+												  <option value="ricefieldsflooding2006-2007">ricefieldsflooding2006-2007</option>
+												</select>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-4 control-label" for="parent_target_codespace_3">Enter  parent feedback target codespace:</label>
+											<div class="col-sm-6">
+												<select class="form-control" id="parent_target_codespace_3" name="parent_target_codespace_3">
 												  <option value="">Please select target codespace</option>
 												  <option value="opengis.uab.cat">opengis.uab.cat</option>
 												</select>

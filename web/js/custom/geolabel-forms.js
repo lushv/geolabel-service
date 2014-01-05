@@ -21,15 +21,19 @@ $(function() {
 	var target_code = $("#target_code_1").val();
 	var target_codespace = $("#target_codespace_1").val();
 	var size = $("#size_1").val();
+	var parent_metadata_url = $("#parent_metadata_url_1").val();
+	var parent_feedback_url = $("#parent_feedback_url_1").val();
 	
 	// encode URLs
 	metadata_url = encodeURIComponent(metadata_url);
 	feedback_url = encodeURIComponent(feedback_url);
+	parent_metadata_url = encodeURIComponent(parent_metadata_url);
+	parent_feedback_url = encodeURIComponent(parent_feedback_url);
 	if(target_code != ''){
 		feedback_url = encodeURIComponent('https://geoviqua.stcorp.nl/api/v1/feedback/collections/?format=xml&target_code=' + target_code + '&target_codespace=' + target_codespace);
 	}
 	
-	dataString = 'metadata=' + metadata_url + '&feedback=' + feedback_url + '&size=' + size;
+	dataString = 'metadata=' + metadata_url + '&feedback=' + feedback_url + '&parent_metadata=' + parent_metadata_url + '&parent_feedback=' + parent_feedback_url + '&size=' + size;
 	
 	// Make a get request using jQuery ajax (see Example 1 for alternative implementation)
     $.ajax({
@@ -104,6 +108,9 @@ $(function() {
 	var metadata_url = $("#metadata_url_3").val();
 	var target_code = $("#target_code_3").val();
 	var target_codespace = $("#target_codespace_3").val();
+	var parent_metadata_url = $("#parent_metadata_url_3").val();
+	var parent_target_code = $("#parent_target_code_3").val();
+	var parent_target_codespace = $("#parent_target_codespace_3").val();
 	var size = $("#size_3").val();
 	
 	// encode URLs
@@ -112,8 +119,13 @@ $(function() {
 	if(target_code != ''){
 		feedback_url = encodeURIComponent('https://geoviqua.stcorp.nl/api/v1/feedback/collections/?format=xml&target_code=' + target_code + '&target_codespace=' + target_codespace);
 	}
+	parent_metadata_url = encodeURIComponent(parent_metadata_url);
+	var parent_feedback_url = "";
+	if(parent_target_code != ''){
+		parent_feedback_url = encodeURIComponent('https://geoviqua.stcorp.nl/api/v1/feedback/collections/?format=xml&target_code=' + parent_target_code + '&target_codespace=' + parent_target_codespace);
+	}
 	
-	dataString = 'metadata=' + metadata_url + '&feedback=' + feedback_url + '&size=' + size;
+	dataString = 'metadata=' + metadata_url + '&feedback=' + feedback_url + '&parent_metadata=' + parent_metadata_url + '&parent_feedback=' + parent_feedback_url + '&size=' + size;
 	
 	// Make a get request using jQuery ajax (see Example 1 for alternative implementation)
     $.ajax({

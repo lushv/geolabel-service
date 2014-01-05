@@ -53,7 +53,6 @@ $app->get('/', function() {
 $app->get('/api/v1/geolabel', function(Request $request) use ($app) {
 	$metadataURL = $request->query->get('metadata');
 	$feedbackURL = $request->query->get('feedback');
-	
 	if(empty($metadataURL) && empty($feedbackURL)){
 		return new Response('<b>Bad request:</b> "metadata" and "feedback" query parameters are missing.', 400);
 	}
@@ -89,8 +88,8 @@ $app->get('/api/v1/geolabel', function(Request $request) use ($app) {
 	
 	// Get all data from the XML document into 3 arrays
 	$availabilityArray = $mappingsProcessor->getAvailabilityEncodings($gvqXML, $parentGvqXML);
-	$hoveroverTextArray = $mappingsProcessor->getHoveroverText($gvqXML);
-	$drilldownURLsArray = $mappingsProcessor->getDrilldownURLs($metadataURL, $feedbackURL);
+	$hoveroverTextArray = $mappingsProcessor->getHoveroverText($gvqXML, $parentGvqXML, $availabilityArray);
+	$drilldownURLsArray = $mappingsProcessor->getDrilldownURLs($metadataURL, $feedbackURL, $parentMetadataURL, $parentFeedbackURL, $availabilityArray);
 	
 	$svgParser = new SVGParser();
 	$svg = $svgParser->constructSVG($availabilityArray, $hoveroverTextArray, $drilldownURLsArray, $size);
@@ -108,8 +107,8 @@ $app->post('/api/v1/geolabel', function(Request $request) use ($app) {
 	if(empty($metadataFile) && empty($feedbackFile)){
 		return new Response('<b>Bad request:</b> "metadata" and "feedback" XML documents are missing.', 400);
 	}
-
-	$MappingsProcessor = new MappingsProcessor($app);
+	$xmlProcessor = new XMLProcessor();
+	$mappingsProcessor = new MappingsProcessor($app);
 	$metadataXML = null;
 	$feedbackXML = null;
 	if(!empty($metadataFile)){
@@ -126,25 +125,34 @@ $app->post('/api/v1/geolabel', function(Request $request) use ($app) {
 			return new Response('<b>Bad request:</b> invalid "feedback" XML document.', 400);
 		}
 	}
-    $metadataURL = $request->get('metadata_url');
-	$feedbackURL = $request->get('feedback_url');
+	$parentMetadataFile = $request->files->get('parent_metadata');
+	$parentFeedbackFile = $request->files->get('parent_feedback');
     $size = $request->get('size');
-		
+	$parentMetadataXML = null;
+	$parentFeedbackXML = null;
+	if(!empty($parentMetadataFile)){
+		//libxml_use_internal_errors(true);
+		$parentMetadataXML = new DOMDocument('1.0', 'utf-8');
+		if(!$parentMetadataXML->load($parentMetadataFile)){
+			$parentMetadataXML = null;
+		}
+	}
+	if(!empty($parentFeedbackFile)){
+		//libxml_use_internal_errors(true);
+		$parentFeedbackXML = new DOMDocument('1.0', 'utf-8');
+		if(!$parentFeedbackXML->load($parentFeedbackFile)){
+			$parentFeedbackXML = null;
+		}
+	}
 	// Join two documents
-	$gvqXML = null;
-	if(!empty($metadataXML) && !empty($feedbackXML)){
-		$gvqXML = $MappingsProcessor->joinXMLDoms($metadataXML, $feedbackXML);
-	}
-	elseif(!empty($metadataXML)){
-		$gvqXML = $metadataXML;
-	}
-	elseif(!empty($feedbackXML)){
-		$gvqXML = $feedbackXML;
-	}
+	$gvqXML = $xmlProcessor->joinXMLDoms($metadataXML, $feedbackXML);
+	// Join parent documents
+	$parentGvqXML = $xmlProcessor->joinXMLDoms($parentMetadataXML, $parentFeedbackXML);
+	
 	// Get all data from the XML document into 3 arrays
-	$availabilityArray = $MappingsProcessor->getAvailabilityEncodings($gvqXML);
-	$hoveroverTextArray = $MappingsProcessor->getHoveroverText($gvqXML);
-	$drilldownURLsArray = $MappingsProcessor->getDrilldownURLs($metadataURL, $feedbackURL);
+	$availabilityArray = $mappingsProcessor->getAvailabilityEncodings($gvqXML, $parentGvqXML);
+	$hoveroverTextArray = $mappingsProcessor->getHoveroverText($gvqXML, $parentGvqXML, $availabilityArray);
+	$drilldownURLsArray = $mappingsProcessor->getDrilldownURLs(null, null, null, null, null);
 	
 	$svgParser = new SVGParser();
 	$svg = $svgParser->constructSVG($availabilityArray, $hoveroverTextArray, $drilldownURLsArray, $size);

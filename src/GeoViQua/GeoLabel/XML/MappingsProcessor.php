@@ -32,6 +32,7 @@ class MappingsProcessor{
 	private $organisation_name_xpath;
 	
 	private $supplemental_information_xpath;
+	private $known_problems_count_xpath;
 	private $known_problems_xpath;
 	
 	private $process_step_count_xpath;
@@ -99,7 +100,8 @@ class MappingsProcessor{
 		// **************************************   INITIALISE HOVER-OVER XPATHS   ***********************************************
 		$this->organisation_name_xpath = $app['transformationDescription']['facetDescriptions'][0]['producerProfile']['hoverover']['text']['organizationNamePath'];
 		
-		$this->supplemental_information_xpath = $app['transformationDescription']['facetDescriptions'][1]['producerComments']['hoverover']['text']['supplementalInformation'];
+		$this->supplemental_information_xpath = $app['transformationDescription']['facetDescriptions'][1]['producerComments']['hoverover']['text']['supplementalInformationPath'];
+		$this->known_problems_count_xpath = $app['transformationDescription']['facetDescriptions'][1]['producerComments']['hoverover']['text']['knownProblemsCountPath'];
 		$this->known_problems_xpath = $app['transformationDescription']['facetDescriptions'][1]['producerComments']['hoverover']['text']['knownProblemsPath'];
 		
 		$this->process_step_count_xpath = $app['transformationDescription']['facetDescriptions'][2]['lineage']['hoverover']['text']['processStepCountPath'];
@@ -149,32 +151,6 @@ class MappingsProcessor{
 		$this->citations_drilldown_url = $app['transformationDescription']['facetDescriptions'][7]['citations']['drilldown']['url'];
 		
 	}
-	
-	/* Function getLabelEncodings
-	 * Generates an array populated with GEO label facets' availability encodings
-	 * 
-	 * @param $xml DomDocument an XML document to process
-	 * @return array of integers where key is a GEO label facet name and value is an integer availability encoding,
-	 * or returns null if supplied xml is empty
-	 */
-	public function getLabelEncodings($xml, $parentXML){
-		if(empty($xml)){
-			return null;
-		}
-		
-		$availabilityArray = array(
-							'producerProfile' => $this->evaluateAvailability($xml, $parentXML, $this->producer_profile_xpath),
-							'producerComments' => $this->evaluateAvailability($xml, $parentXML, $this->producer_comments_xpath),
-							'lineage' => $this->evaluateAvailability($xml, $parentXML, $this->lineage_xpath),
-							'standardsComplaince' => $this->evaluateAvailability($xml, $parentXML, $this->standards_xpath),
-							'qualityInformation' => $this->evaluateAvailability($xml, $parentXML, $this->quality_xpath),
-							'userFeedback' => $this->evaluateAvailability($xml, $parentXML, $this->feedback_xpath),
-							'expertReview' => $this->evaluateAvailability($xml, $parentXML, $this->review_xpath),
-							'citations' => $this->evaluateAvailability($xml, $parentXML, $this->citations_xpath),
-							);
-
-		return $availabilityArray;
-	}
 
 	/* Function getAvailabilityEncodings
 	 * Generates an array populated with GEO label facets' availability encodings
@@ -209,38 +185,128 @@ class MappingsProcessor{
 	 * @return array an array populated with hover-over text for each GEO label facet,
 	 * or null if $xml is empty
 	 */
-	public function getHoveroverText($xml, $parentXML){
+	public function getHoveroverText($xml, $parentXML, $availabilityArray){
 		if(empty($xml)){
 			return null;
 		}
+		// Default hoverover values
+		$organisationName = "undefined";
+		$supplementalInformation = "undefined";
+		$knownProblems = "undefined";
+		$knownProblemsCount = 0;
+		$processStepCount = 0;
+		$standardName = "undefined";
+		$standardVersion = "undefined";
+		$scopeLevel = "undefined";
+		$feedbacksCount = 0;
+		$feedbacksAverageRating = 0;
+		$ratingsCount = 0;
+		$expertReviewsCount = 0;
+		$expertAverageRating = 0;
+		$expertRatingsCount = 0;
+		$citationsCount = 0;
 		
-		// Evaluate hoverover XPath expressions
-		$organisationName = $this->evaluateXPath($xml, $this->organisation_name_xpath, "undefined");
-		
-		$supplementalInformation = $this->evaluateXPath($xml, $this->supplemental_information_xpath, "undefined");
-		$knownProblems = $this->evaluateXPath($xml, $this->known_problems_xpath, "undefined");
-		
-		$processStepCount = $this->evaluateXPath($xml, $this->process_step_count_xpath, 0);
-		
-		$standardName = $this->evaluateXPath($xml, $this->standard_name_xpath, "undefined");
-		$standardVersion = $this->evaluateXPath($xml, $this->standard_version_xpath, "undefined");
-		
-		$scopeLevel = $this->evaluateXPath($xml, $this->scope_level_xpath, "undefined");
-		
-		$feedbacksCount = $this->evaluateXPath($xml, $this->feedbacks_count_xpath, 0);
-		$feedbacksAverageRating = round($this->evaluateXPath($xml, $this->average_rating_xpath, 0), 1);
-		$ratingsCount = $this->evaluateXPath($xml, $this->ratings_count_xpath, 0);
+		// If parent XML is empty then evaluate XML document
+		if(!empty($parentXML) && !empty($availabilityArray)){
+			// Get producer profile hoverover text
+			if($availabilityArray['producerProfile'] == 1){
+				$organisationName = $this->evaluateXPath($xml, $this->organisation_name_xpath, "undefined");
+			}
+			else if($availabilityArray['producerProfile'] == 2){
+				$organisationName = $this->evaluateXPath($parentXML, $this->organisation_name_xpath, "undefined");
+			}
+			// Get producer comments hoverover text
+			if($availabilityArray['producerComments'] == 1){
+				$supplementalInformation = $this->evaluateXPath($xml, $this->supplemental_information_xpath, "undefined");
+				$knownProblems = $this->evaluateXPath($xml, $this->known_problems_xpath, "undefined");
+				$knownProblemsCount = $this->evaluateXPath($xml, $this->known_problems_count_xpath, 0);
+			}
+			else if($availabilityArray['producerComments'] == 2){
+				$supplementalInformation = $this->evaluateXPath($parentXML, $this->supplemental_information_xpath, "undefined");
+				$knownProblems = $this->evaluateXPath($parentXML, $this->known_problems_xpath, "undefined");
+				$knownProblemsCount = $this->evaluateXPath($parentXML, $this->known_problems_count_xpath, 0);
+			}
+			// Get lineage hoverover text
+			if($availabilityArray['lineage'] == 1){
+				$processStepCount = $this->evaluateXPath($xml, $this->process_step_count_xpath, 0);
+			}
+			else if($availabilityArray['lineage'] == 2){
+				$processStepCount = $this->evaluateXPath($parentXML, $this->process_step_count_xpath, 0);
+			}
+			// Get standards complaince hoverover text
+			if($availabilityArray['standardsComplaince'] == 1){
+				$standardName = $this->evaluateXPath($xml, $this->standard_name_xpath, "undefined");
+				$standardVersion = $this->evaluateXPath($xml, $this->standard_version_xpath, "undefined");
+			}
+			else if($availabilityArray['standardsComplaince'] == 2){
+				$standardName = $this->evaluateXPath($parentXML, $this->standard_name_xpath, "undefined");
+				$standardVersion = $this->evaluateXPath($parentXML, $this->standard_version_xpath, "undefined");
+			}
+			// Get quality information hoverover text
+			if($availabilityArray['qualityInformation'] == 1){
+				$scopeLevel = $this->evaluateXPath($xml, $this->scope_level_xpath, "undefined");
+			}
+			else if($availabilityArray['qualityInformation'] == 2){
+				$scopeLevel = $this->evaluateXPath($parentXML, $this->scope_level_xpath, "undefined");
+			}
+			// Get feedback hoverover text
+			if($availabilityArray['userFeedback'] == 1){
+				$feedbacksCount = $this->evaluateXPath($xml, $this->feedbacks_count_xpath, 0);
+				$feedbacksAverageRating = round($this->evaluateXPath($xml, $this->average_rating_xpath, 0), 1);
+				$ratingsCount = $this->evaluateXPath($xml, $this->ratings_count_xpath, 0);
+			}
+			else if($availabilityArray['userFeedback'] == 2){
+				$feedbacksCount = $this->evaluateXPath($parentXML, $this->feedbacks_count_xpath, 0);
+				$feedbacksAverageRating = round($this->evaluateXPath($parentXML, $this->average_rating_xpath, 0), 1);
+				$ratingsCount = $this->evaluateXPath($parentXML, $this->ratings_count_xpath, 0);
+			}
+			// Get expert review hoverover text
+			if($availabilityArray['expertReview'] == 1){
+				$expertReviewsCount = $this->evaluateXPath($xml, $this->reviews_count_xpath, 0);
+				$expertAverageRating = round($this->evaluateXPath($xml, $this->reviews_average_rating_xpath, 0), 1);
+				$expertRatingsCount = $this->evaluateXPath($xml, $this->reviews_ratings_count_xpath, 0);
+			}
+			else if($availabilityArray['expertReview'] == 2){
+				$expertReviewsCount = $this->evaluateXPath($parentXML, $this->reviews_count_xpath, 0);
+				$expertAverageRating = round($this->evaluateXPath($parentXML, $this->reviews_average_rating_xpath, 0), 1);
+				$expertRatingsCount = $this->evaluateXPath($parentXML, $this->reviews_ratings_count_xpath, 0);
+			}
+			// Get citations hoverover text
+			if($availabilityArray['citations'] == 1){
+				$citationsCount = $this->evaluateXPath($xml, $this->citations_count_xpath, 0);
+			}
+			else if($availabilityArray['citations'] == 2){
+				$citationsCount = $this->evaluateXPath($parentXML, $this->citations_count_xpath, 0);
+			}
+		}
+		else{
+			$organisationName = $this->evaluateXPath($xml, $this->organisation_name_xpath, "undefined");
 
-		$expertReviewsCount = $this->evaluateXPath($xml, $this->reviews_count_xpath, 0);
-		$expertAverageRating = round($this->evaluateXPath($xml, $this->reviews_average_rating_xpath, 0), 1);
-		$expertRatingsCount = $this->evaluateXPath($xml, $this->reviews_ratings_count_xpath, 0);
-		
-		$citationsCount = $this->evaluateXPath($xml, $this->citations_count_xpath, 0);
+			$supplementalInformation = $this->evaluateXPath($xml, $this->supplemental_information_xpath, "undefined");
+			$knownProblems = $this->evaluateXPath($xml, $this->known_problems_xpath, "undefined");
+			$knownProblemsCount = $this->evaluateXPath($xml, $this->known_problems_count_xpath, 0);
+			
+			$processStepCount = $this->evaluateXPath($xml, $this->process_step_count_xpath, 0);
+			
+			$standardName = $this->evaluateXPath($xml, $this->standard_name_xpath, "undefined");
+			$standardVersion = $this->evaluateXPath($xml, $this->standard_version_xpath, "undefined");
+			
+			$scopeLevel = $this->evaluateXPath($xml, $this->scope_level_xpath, "undefined");
+			
+			$feedbacksCount = $this->evaluateXPath($xml, $this->feedbacks_count_xpath, 0);
+			$feedbacksAverageRating = round($this->evaluateXPath($xml, $this->average_rating_xpath, 0), 1);
+			$ratingsCount = $this->evaluateXPath($xml, $this->ratings_count_xpath, 0);
 
+			$expertReviewsCount = $this->evaluateXPath($xml, $this->reviews_count_xpath, 0);
+			$expertAverageRating = round($this->evaluateXPath($xml, $this->reviews_average_rating_xpath, 0), 1);
+			$expertRatingsCount = $this->evaluateXPath($xml, $this->reviews_ratings_count_xpath, 0);
+			
+			$citationsCount = $this->evaluateXPath($xml, $this->citations_count_xpath, 0);
+		}
 		// Construct hoverover text array
 		$hoveroverArray = array(
 								'producerProfile' => $this->producer_profile_facet_title . PHP_EOL . sprintf($this->producer_profile_text_template, $organisationName),
-								'producerComments' => $this->producer_comments_facet_title . PHP_EOL . sprintf($this->producer_comments_text_template, $supplementalInformation, $knownProblems),
+								'producerComments' => $this->producer_comments_facet_title . PHP_EOL . sprintf($this->producer_comments_text_template, $supplementalInformation, "\n", $knownProblemsCount, $knownProblems),
 								'lineage' => $this->lineage_facet_title . PHP_EOL . sprintf($this->lineage_text_template, $processStepCount),
 								'standardsComplaince' => $this->standards_complaince_facet_title . PHP_EOL . sprintf($this->standards_complaince_text_template, $standardName, $standardVersion),
 								'qualityInformation' => $this->quality_facet_title . PHP_EOL . sprintf($this->quality_information_text_template, $scopeLevel),
@@ -251,6 +317,89 @@ class MappingsProcessor{
 								
 		return $hoveroverArray;
 	}
+	
+	/* Function getDrilldownURLs
+	 * Generates an array populated with drilldown URLs for each GEO label facet
+	 * 
+	 * @param $producerURL String producer URL
+	 * @param $feedbackURL String feedback URL
+	 * @return array an array populated with drilldown URLs for each GEO label facet,
+	 * or null if $xml is empty
+	 */
+	public function getDrilldownURLs($producerURL, $feedbackURL, $parentProducerURL, $parentFeedbackURL, $availabilityArray){
+		$producerURL = urlencode($producerURL);
+		$feedbackURL = urlencode($feedbackURL);
+		$parentProducerURL = urlencode($parentProducerURL);
+		$parentFeedbackURL = urlencode($parentFeedbackURL);
+
+		// Get server protocol
+		$server_protocol = 'http';
+		if ($_SERVER['HTTPS'] == 'on') {$pageURL .= 's';}
+		$server_protocol .= '://';
+		// temporary fix for the geolabel.net service
+		$drilldown_base_url = $server_protocol . $_SERVER['SERVER_NAME'] . '/api/v1/drilldown';
+		
+		// By default, set URLs to XML file's location
+		$producerProfile = sprintf($this->producer_profile_drilldown_url, $drilldown_base_url, $producerURL);
+		$producerComments = sprintf($this->producer_comments_drilldown_url, $drilldown_base_url, $producerURL);
+		$lineage = sprintf($this->lineage_drilldown_url, $drilldown_base_url, $producerURL);
+		$standardsComplaince = sprintf($this->standards_drilldown_url, $drilldown_base_url, $producerURL);
+		$qualityInformation = sprintf($this->quality_information_drilldown_url, $drilldown_base_url, $producerURL);
+		$userFeedback = sprintf($this->user_feedback_drilldown_url, $drilldown_base_url, $feedbackURL);
+		$expertReview = sprintf($this->expert_review_drilldown_url, $drilldown_base_url, $feedbackURL);
+		$citations = sprintf($this->citations_drilldown_url, $drilldown_base_url, $producerURL, $feedbackURL);
+		
+		if(!empty($availabilityArray) && !empty($parentProducerURL)){
+			if($availabilityArray['producerProfile'] == 2){
+				$producerProfile = sprintf($this->producer_profile_drilldown_url, $drilldown_base_url, $parentProducerURL);
+			}
+			if($availabilityArray['producerComments'] == 2){
+				$producerComments = sprintf($this->producer_comments_drilldown_url, $drilldown_base_url, $parentProducerURL);
+			}
+			if($availabilityArray['lineage'] == 2){
+				$lineage = sprintf($this->lineage_drilldown_url, $drilldown_base_url, $parentProducerURL);
+			}
+			if($availabilityArray['standardsComplaince'] == 2){
+				$standardsComplaince = sprintf($this->standards_drilldown_url, $drilldown_base_url, $parentProducerURL);
+			}
+			if($availabilityArray['qualityInformation'] == 2){
+				$qualityInformation = sprintf($this->quality_information_drilldown_url, $drilldown_base_url, $parentProducerURL);
+			}
+		}
+		if(!empty($availabilityArray) && !empty($parentFeedbackURL)){
+			if($availabilityArray['userFeedback'] == 2){
+				$userFeedback = sprintf($this->user_feedback_drilldown_url, $drilldown_base_url, $parentFeedbackURL);
+			}
+			if($availabilityArray['expertReview'] == 2){
+				$expertReview = sprintf($this->expert_review_drilldown_url, $drilldown_base_url, $parentFeedbackURL);
+			}
+		}
+		if(!empty($availabilityArray) && (!empty($parentProducerURL) || !empty($parentFeedbackURL))){
+			if($availabilityArray['citations'] == 2){
+				$citations = sprintf($this->citations_drilldown_url, $drilldown_base_url, $parentProducerURL, $parentFeedbackURL);
+			}
+		}
+		
+		// Construct drilldown URLs
+		$drilldownURLsArray = array(
+								'producerProfile' => $producerProfile,
+								'producerComments' => $producerComments,
+								'lineage' => $lineage,
+								'standardsComplaince' => $standardsComplaince,
+								'qualityInformation' => $qualityInformation,
+								'userFeedback' => $userFeedback,
+								'expertReview' => $expertReview,
+								'citations' => $citations,
+								);
+								
+		return $drilldownURLsArray;
+	}
+	
+	
+	
+	
+	
+	
 	
 	/* Function getSummary
 	 * Generates an array populated with summary of the information available for a given dataset
@@ -355,57 +504,6 @@ class MappingsProcessor{
 		}
 		
 		return $returnDefault;
-	}
-	
-	/* Function getDrilldownURLs
-	 * Generates an array populated with drilldown URLs for each GEO label facet
-	 * 
-	 * @param $producerURL String producer URL
-	 * @param $feedbackURL String feedback URL
-	 * @return array an array populated with drilldown URLs for each GEO label facet,
-	 * or null if $xml is empty
-	 */
-	public function getDrilldownURLs($producerURL, $feedbackURL){
-		$producerURL = urlencode($producerURL);
-		$feedbackURL = urlencode($feedbackURL);
-		
-
-		// Get server protocol
-		$server_protocol = 'http';
-		if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
-		$server_protocol .= "://";
-		
-		/*
-		// Get current URL and set base drilldown URL
-		$request_uri = str_replace("geolabel?", "drilldown?", $_SERVER['REQUEST_URI']);
-		// quick fix for the inspire demo
-		$request_uri = str_replace("geolabel/demo", "drilldown?", $request_uri);
-		
-		$base_url = explode("?", $request_uri);
-		$drilldown_base_url = $server_protocol . $_SERVER["SERVER_NAME"] . $base_url[0] . "?";
-		
-		// This code fixes geolabel.net redirection problem
-		if (strpos($drilldown_base_url, '/?') !== false) {
-			$drilldown_base_url = str_replace("/?", "/api/v1/drilldown?", $drilldown_base_url);
-		}
-		*/
-		
-		// temporary fix for the geolabel.net service
-		$drilldown_base_url = $server_protocol . $_SERVER["SERVER_NAME"] . "/api/v1/drilldown";
-		
-		// Construct drilldown URLs
-		$drilldownURLsArray = array(
-								'producerProfile' => sprintf($this->producer_profile_drilldown_url, $drilldown_base_url, $producerURL),
-								'producerComments' => sprintf($this->producer_comments_drilldown_url, $drilldown_base_url, $producerURL),
-								'lineage' => sprintf($this->lineage_drilldown_url, $drilldown_base_url, $producerURL),
-								'standardsComplaince' => sprintf($this->standards_drilldown_url, $drilldown_base_url, $producerURL),
-								'qualityInformation' => sprintf($this->quality_information_drilldown_url, $drilldown_base_url, $producerURL),
-								'userFeedback' => sprintf($this->user_feedback_drilldown_url, $drilldown_base_url, $feedbackURL),
-								'expertReview' => sprintf($this->expert_review_drilldown_url, $drilldown_base_url, $feedbackURL),
-								'citations' => sprintf($this->citations_drilldown_url, $drilldown_base_url, $producerURL, $feedbackURL),
-								);
-								
-		return $drilldownURLsArray;
 	}
 
 	/* Function getJsonAvailabilityEncodings
