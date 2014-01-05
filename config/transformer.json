@@ -52,7 +52,7 @@
          },
          {
             "lineage":{
-               "availabilityPath":"boolean(normalize-space(string(//*[local-name()='trace']/*[local-name()='LI_Lineage']/*[local-name()='processStep'] | //*[local-name()='lineage']/*[local-name()='LI_Lineage']/*[local-name()='statement'] | //*[local-name()='lineage']/*[local-name()='LI_Lineage']/*[local-name()='processStep'])))",
+               "availabilityPath":"boolean(normalize-space(string(//*[local-name()='trace']/*[local-name()='LI_Lineage'] | //*[local-name()='trace']/*[local-name()='LI_Lineage']/*[local-name()='processStep'] | //*[local-name()='lineage']/*[local-name()='LI_Lineage']/*[local-name()='statement'] | //*[local-name()='lineage']/*[local-name()='LI_Lineage']/*[local-name()='processStep'])))",
                "hoverover":{
                   "facetName":"Lineage Information",
                   "template":"Number of process steps: %d.",
@@ -61,7 +61,7 @@
                   }
                },
                "drilldown":{
-                  "url":"%s?metadata=%s&facet=lineage"
+                  "url":"%s?metadata=%s&facet=lineage_information"
                }
             }
          },

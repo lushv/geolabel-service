@@ -255,7 +255,7 @@ $app->get('/api/v1/drilldown', function(Request $request) use ($app) {
 		case "producer_comments":
 			$stylesheet_url = "stylesheets/GVQ_ProducerComments.xsl";
 			break;
-		case "lineage":
+		case "lineage_information":
 			$stylesheet_url = "stylesheets/GVQ_Lineage.xsl";
 			break;
 		case "standards_complaince":
