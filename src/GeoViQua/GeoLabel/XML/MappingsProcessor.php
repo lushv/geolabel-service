@@ -112,12 +112,12 @@ class MappingsProcessor{
 		$this->scope_level_xpath = $app['transformationDescription']['facetDescriptions'][4]['qualityInformation']['hoverover']['text']['scopeLevelPath'];
 		
 		$this->feedbacks_count_xpath = $app['transformationDescription']['facetDescriptions'][5]['userFeedback']['hoverover']['text']['feedbacksCountPath'];
-		$this->ratings_count_xpath = $app['transformationDescription']['facetDescriptions'][5]['userFeedback']['hoverover']['text']['averageRatingPath'];
-		$this->average_rating_xpath = $app['transformationDescription']['facetDescriptions'][5]['userFeedback']['hoverover']['text']['ratingsCountPath'];
+		$this->average_rating_xpath = $app['transformationDescription']['facetDescriptions'][5]['userFeedback']['hoverover']['text']['averageRatingPath'];
+		$this->ratings_count_xpath = $app['transformationDescription']['facetDescriptions'][5]['userFeedback']['hoverover']['text']['ratingsCountPath'];
 
 		$this->reviews_count_xpath = $app['transformationDescription']['facetDescriptions'][6]['expertReview']['hoverover']['text']['reviewsCountPath'];
-		$this->reviews_ratings_count_xpath = $app['transformationDescription']['facetDescriptions'][6]['expertReview']['hoverover']['text']['averageRatingPath'];
-		$this->reviews_average_rating_xpath = $app['transformationDescription']['facetDescriptions'][6]['expertReview']['hoverover']['text']['ratingsCountPath'];
+		$this->reviews_average_rating_xpath = $app['transformationDescription']['facetDescriptions'][6]['expertReview']['hoverover']['text']['averageRatingPath'];
+		$this->reviews_ratings_count_xpath = $app['transformationDescription']['facetDescriptions'][6]['expertReview']['hoverover']['text']['ratingsCountPath'];
 		
 		$this->citations_count_xpath = $app['transformationDescription']['facetDescriptions'][7]['citations']['hoverover']['text']['citationsCountPath'];
 
