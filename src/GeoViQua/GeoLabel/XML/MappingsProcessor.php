@@ -340,41 +340,37 @@ class MappingsProcessor{
 		$drilldown_base_url = $server_protocol . $_SERVER['SERVER_NAME'] . '/api/v1/drilldown';
 		
 		// By default, set URLs to XML file's location
-		$producerProfile = sprintf($this->producer_profile_drilldown_url, $drilldown_base_url, $producerURL);
-		$producerComments = sprintf($this->producer_comments_drilldown_url, $drilldown_base_url, $producerURL);
-		$lineage = sprintf($this->lineage_drilldown_url, $drilldown_base_url, $producerURL);
-		$standardsComplaince = sprintf($this->standards_drilldown_url, $drilldown_base_url, $producerURL);
-		$qualityInformation = sprintf($this->quality_information_drilldown_url, $drilldown_base_url, $producerURL);
-		$userFeedback = sprintf($this->user_feedback_drilldown_url, $drilldown_base_url, $feedbackURL);
-		$expertReview = sprintf($this->expert_review_drilldown_url, $drilldown_base_url, $feedbackURL);
+		$producerProfile = sprintf($this->producer_profile_drilldown_url, $drilldown_base_url, $producerURL, $feedbackURL);
+		$producerComments = sprintf($this->producer_comments_drilldown_url, $drilldown_base_url, $producerURL, $feedbackURL);
+		$lineage = sprintf($this->lineage_drilldown_url, $drilldown_base_url, $producerURL, $feedbackURL);
+		$standardsComplaince = sprintf($this->standards_drilldown_url, $drilldown_base_url, $producerURL, $feedbackURL);
+		$qualityInformation = sprintf($this->quality_information_drilldown_url, $drilldown_base_url, $producerURL, $feedbackURL);
+		$userFeedback = sprintf($this->user_feedback_drilldown_url, $drilldown_base_url, $producerURL, $feedbackURL);
+		$expertReview = sprintf($this->expert_review_drilldown_url, $drilldown_base_url, $producerURL, $feedbackURL);
 		$citations = sprintf($this->citations_drilldown_url, $drilldown_base_url, $producerURL, $feedbackURL);
 		
-		if(!empty($availabilityArray) && !empty($parentProducerURL)){
+		if(!empty($availabilityArray) && (!empty($parentProducerURL) || !empty($parentFeedbackURL))){
 			if($availabilityArray['producerProfile'] == 2){
-				$producerProfile = sprintf($this->producer_profile_drilldown_url, $drilldown_base_url, $parentProducerURL);
+				$producerProfile = sprintf($this->producer_profile_drilldown_url, $drilldown_base_url, $parentProducerURL, $parentFeedbackURL);
 			}
 			if($availabilityArray['producerComments'] == 2){
-				$producerComments = sprintf($this->producer_comments_drilldown_url, $drilldown_base_url, $parentProducerURL);
+				$producerComments = sprintf($this->producer_comments_drilldown_url, $drilldown_base_url, $parentProducerURL, $parentFeedbackURL);
 			}
 			if($availabilityArray['lineage'] == 2){
-				$lineage = sprintf($this->lineage_drilldown_url, $drilldown_base_url, $parentProducerURL);
+				$lineage = sprintf($this->lineage_drilldown_url, $drilldown_base_url, $parentProducerURL, $parentFeedbackURL);
 			}
 			if($availabilityArray['standardsComplaince'] == 2){
-				$standardsComplaince = sprintf($this->standards_drilldown_url, $drilldown_base_url, $parentProducerURL);
+				$standardsComplaince = sprintf($this->standards_drilldown_url, $drilldown_base_url, $parentProducerURL, $parentFeedbackURL);
 			}
 			if($availabilityArray['qualityInformation'] == 2){
-				$qualityInformation = sprintf($this->quality_information_drilldown_url, $drilldown_base_url, $parentProducerURL);
+				$qualityInformation = sprintf($this->quality_information_drilldown_url, $drilldown_base_url, $parentProducerURL, $parentFeedbackURL);
 			}
-		}
-		if(!empty($availabilityArray) && !empty($parentFeedbackURL)){
 			if($availabilityArray['userFeedback'] == 2){
-				$userFeedback = sprintf($this->user_feedback_drilldown_url, $drilldown_base_url, $parentFeedbackURL);
+				$userFeedback = sprintf($this->user_feedback_drilldown_url, $drilldown_base_url, $parentProducerURL, $parentFeedbackURL);
 			}
 			if($availabilityArray['expertReview'] == 2){
-				$expertReview = sprintf($this->expert_review_drilldown_url, $drilldown_base_url, $parentFeedbackURL);
+				$expertReview = sprintf($this->expert_review_drilldown_url, $drilldown_base_url, $parentProducerURL, $parentFeedbackURL);
 			}
-		}
-		if(!empty($availabilityArray) && (!empty($parentProducerURL) || !empty($parentFeedbackURL))){
 			if($availabilityArray['citations'] == 2){
 				$citations = sprintf($this->citations_drilldown_url, $drilldown_base_url, $parentProducerURL, $parentFeedbackURL);
 			}
