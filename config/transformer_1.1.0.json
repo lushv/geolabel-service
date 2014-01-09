@@ -1,7 +1,8 @@
 {
    "transformationDescription":{
       "name":"transformer",
-      "namespaceMappings":[
+      "version": "1.1.0",
+	  "namespaceMappings":[
          {
             "prefix":"gmd",
             "namespace":"http://www.isotc211.org/2005/gmd"
@@ -27,7 +28,7 @@
 					}
                },
                "drilldown":{
-                  "url":"%s?metadata=%s&facet=producer_profile"
+                  "url":"%s?metadata=%s&feedback=%s&facet=producer_profile"
                }
             }
          },
@@ -46,7 +47,7 @@
                   }
                },
                "drilldown":{
-                  "url":"%s?metadata=%s&facet=producer_comments"
+                  "url":"%s?metadata=%s&feedback=%s&facet=producer_comments"
                }
             }
          },
@@ -61,7 +62,7 @@
                   }
                },
                "drilldown":{
-                  "url":"%s?metadata=%s&facet=lineage_information"
+                  "url":"%s?metadata=%s&feedback=%s&facet=lineage_information"
                }
             }
          },
@@ -77,7 +78,7 @@
                   }
                },
                "drilldown":{
-                  "url":"%s?metadata=%s&facet=standards_complaince"
+                  "url":"%s?metadata=%s&feedback=%s&facet=standards_complaince"
                }
             }
          },
@@ -92,7 +93,7 @@
                   }
                },
                "drilldown":{
-                  "url":"%s?metadata=%s&facet=quality_information"
+                  "url":"%s?metadata=%s&feedback=%s&facet=quality_information"
                }
             }
          },
@@ -109,7 +110,7 @@
                   }
                },
                "drilldown":{
-                  "url":"%s?feedback=%s&facet=user_feedback"
+                  "url":"%s?metadata=%s&feedback=%s&facet=user_feedback"
                }
             }
          },
@@ -126,7 +127,7 @@
                   }
                },
                "drilldown":{
-                  "url":"%s?feedback=%s&facet=expert_review"
+                  "url":"%s?metadata=%s&feedback=%s&facet=expert_review"
                }
             }
          },

@@ -13,22 +13,22 @@ use Symfony\Component\HttpFoundation\Request as Request;
 $app = new Silex\Application();
 
 // XPath configuration files caching
-$cache_transformer_file = __DIR__."/../config/transformer.json";
+$cache_transformer_file = __DIR__."/../config/transformer_1.1.0.json";
 $cache_life = '86400'; //caching time (24 hours), in seconds
 
 // Use @ to supress warnings
 $filemtime_gvq = @filemtime($cache_transformer_file);  // returns FALSE if file does not exist
 
-// Check if transformer.json expired
+// Check if transformer_1.1.0.json expired
 if(!$filemtime_gvq or (time() - $filemtime_gvq >= $cache_life)){
-	$transformer = @file_get_contents("http://geoviqua.github.io/geolabel/mappings/transformer.json");
+	$transformer = @file_get_contents("http://geoviqua.github.io/geolabel/mappings/transformer_1.1.0.json");
 	if(!($transformer === false)){
 		file_put_contents($cache_transformer_file, $transformer);
 	}
 }
 
 // Register configuration files
-$app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__."/../config/transformer.json"));
+$app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__."/../config/transformer_1.1.0.json"));
 
 // enable error messages
 //$app['debug'] = true;
