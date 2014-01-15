@@ -58,7 +58,7 @@
                   "facetName":"Lineage Information",
                   "template":"Number of process steps: %d.",
                   "text":{
-                     "processStepCountPath":"count(//*[local-name()='lineage']//*[local-name()='processStep'] | //*[local-name()='LI_Lineage']//*[local-name()='processStep'] | //*[local-name()='LI_Lineage']//*[local-name()='LE_ProcessStep'])"
+                     "processStepCountPath":"count(//*[local-name()='LI_Lineage']//*[local-name()='LI_ProcessStep'] | //*[local-name()='LI_Lineage']//*[local-name()='LE_ProcessStep'])"
                   }
                },
                "drilldown":{
